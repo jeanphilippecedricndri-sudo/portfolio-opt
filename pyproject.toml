@@ -5,15 +5,19 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "portopt"
 version = "0.1.0"
-description = "Portfolio allocation research toolkit: data, estimators (1/N, InvVol, Risk Parity, ERC, HRP), walk-forward backtester, metrics."
+description = "Portfolio allocation research toolkit: data, estimators (1/N, InvVol, Risk Parity, ERC, HRP), walk-forward backtester, metrics, charts."
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0", "scipy>=1.10", "yfinance>=0.2.40"]
 
 [project.optional-dependencies]
+plot = ["matplotlib>=3.7"]
 dev = ["pytest>=7", "matplotlib>=3.7"]
 
 [tool.setuptools.packages.find]
 include = ["portopt*"]
+
+[tool.setuptools.package-data]
+portopt = ["fonts/*.ttf", "fonts/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

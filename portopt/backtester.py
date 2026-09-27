@@ -141,6 +141,26 @@ class Backtester:
         years = len(self.returns_) / periods_per_year
         return float(self.turnover_.iloc[1:].sum() / years)
 
+    def risk_contributions(self, cov_method="sample") -> pd.DataFrame:
+        """Ex-ante relative risk contributions of the target weights at each rebalancing,
+        with the covariance estimated on the same in-sample window the estimator saw."""
+        from .estimator import estimate_cov, risk_contributions
+
+        if self.weights_ is None:
+            raise RuntimeError("call run() first.")
+        r = self.returns
+        pos = r.index.get_indexer(self.weights_.index)
+        rows = []
+        for p, (date, w) in zip(pos, self.weights_.iterrows()):
+            start = 0 if self.window == "expanding" else p - self.in_sample
+            live = w[w > 0].index
+            window = r.iloc[start:p][live]
+            rc = pd.Series(0.0, index=r.columns)
+            if len(live):
+                rc[live] = risk_contributions(w[live].to_numpy(), estimate_cov(window, cov_method))
+            rows.append(rc.rename(date))
+        return pd.DataFrame(rows)
+
 
 def run_backtests(
     returns: pd.DataFrame,

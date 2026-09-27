@@ -146,6 +146,64 @@ def resample_returns(
     raise ValueError("method must be 'simple' or 'log'")
 
 
+SIM_ASSETS = ["SPY", "EFA", "EEM", "IWM", "TLT", "IEF", "LQD", "GLD", "DBC", "VNQ"]
+
+
+def simulate_returns(
+    n_obs: int = 252 * 15,
+    start: str = "2010-01-01",
+    seed: int = 15,
+) -> pd.DataFrame:
+    """Realistic synthetic daily returns for a 10-ETF multi-asset universe (offline work, docs, tests).
+
+    * hand-calibrated vols / correlations (equities ~0.8 together, equity-bond ~ -0.3, ...),
+    * 2-state Markov regime: calm (x0.8 vol) / stress (x2 vol, equity drift negative),
+    * Student-t(5) innovations for fat tails.
+    """
+    rng = np.random.default_rng(seed)
+    vols = np.array([0.16, 0.17, 0.22, 0.21, 0.14, 0.065, 0.075, 0.15, 0.19, 0.22])
+    mus = np.array([0.10, 0.07, 0.08, 0.09, 0.035, 0.025, 0.035, 0.05, 0.02, 0.08])
+    c = np.array([
+        # SPY   EFA   EEM   IWM   TLT   IEF   LQD   GLD   DBC   VNQ
+        [1.00, 0.85, 0.75, 0.88, -0.30, -0.28, 0.20, 0.05, 0.40, 0.72],  # SPY
+        [0.85, 1.00, 0.82, 0.78, -0.25, -0.24, 0.22, 0.12, 0.45, 0.65],  # EFA
+        [0.75, 0.82, 1.00, 0.70, -0.20, -0.18, 0.25, 0.20, 0.50, 0.58],  # EEM
+        [0.88, 0.78, 0.70, 1.00, -0.30, -0.28, 0.18, 0.03, 0.38, 0.75],  # IWM
+        [-0.30, -0.25, -0.20, -0.30, 1.00, 0.92, 0.65, 0.25, -0.20, 0.05],  # TLT
+        [-0.28, -0.24, -0.18, -0.28, 0.92, 1.00, 0.72, 0.28, -0.18, 0.05],  # IEF
+        [0.20, 0.22, 0.25, 0.18, 0.65, 0.72, 1.00, 0.25, 0.05, 0.35],  # LQD
+        [0.05, 0.12, 0.20, 0.03, 0.25, 0.28, 0.25, 1.00, 0.35, 0.10],  # GLD
+        [0.40, 0.45, 0.50, 0.38, -0.20, -0.18, 0.05, 0.35, 1.00, 0.30],  # DBC
+        [0.72, 0.65, 0.58, 0.75, 0.05, 0.05, 0.35, 0.10, 0.30, 1.00],  # VNQ
+    ])
+    ev, V = np.linalg.eigh(c)  # project to nearest PSD correlation, just in case
+    c = V @ np.diag(np.clip(ev, 1e-4, None)) @ V.T
+    d = np.sqrt(np.diag(c))
+    c = c / np.outer(d, d)
+    L = np.linalg.cholesky(c)
+
+    # regimes: P(calm->stress)=1/250, P(stress->calm)=1/60
+    state = np.zeros(n_obs, dtype=int)
+    for t in range(1, n_obs):
+        p = 1 / 250 if state[t - 1] == 0 else 1 - 1 / 60
+        state[t] = rng.random() < p
+    scale = np.where(state == 1, 2.0, 0.8)
+    # risky assets lose 2x their drift in stress, safe havens (TLT, IEF, GLD) rally;
+    # calm drift is set so that the long-run average drift equals `mus`
+    p_s = (1 / 250) / (1 / 250 + 1 / 60)
+    stress_mu = np.where(vols > 0.15, -2.0 * mus, mus)
+    stress_mu[[4, 5, 7]] = [0.12, 0.06, 0.12]
+    calm_mu = (mus - p_s * stress_mu) / (1 - p_s)
+    drift = np.where(state[:, None] == 1, stress_mu, calm_mu)
+
+    nu = 5
+    z = rng.standard_normal((n_obs, len(vols))) @ L.T
+    z *= np.sqrt((nu - 2) / rng.chisquare(nu, size=(n_obs, 1)))  # unit-variance multivariate t
+    x = drift / 252 + z * vols / np.sqrt(252) * scale[:, None]
+    idx = pd.bdate_range(start, periods=n_obs)
+    return pd.DataFrame(x, index=idx, columns=SIM_ASSETS)
+
+
 def load_returns(
     tickers: str | Iterable[str],
     start: str | None = None,

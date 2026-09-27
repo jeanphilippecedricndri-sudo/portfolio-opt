@@ -1,4 +1,4 @@
-"""portopt: data, allocation estimators, walk-forward backtester and portfolio metrics."""
+"""portopt: data, allocation estimators, walk-forward backtester, portfolio metrics and charts (portopt.plot)."""
 
 from . import backtester, data, estimator, metric
 from .backtester import Backtester, run_backtests
