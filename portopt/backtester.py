@@ -171,7 +171,14 @@ def run_backtests(
 ) -> tuple[pd.DataFrame, dict[str, Backtester]]:
     """Backtest several estimators on the same grid. Returns (returns DataFrame, backtesters)."""
     if not isinstance(estimators, Mapping):
-        estimators = {e.name: e for e in estimators}
+        estimators = list(estimators)
+        names = [e.name for e in estimators]
+        dup = sorted({n for n in names if names.count(n) > 1})
+        if dup:
+            raise ValueError(
+                f"Several estimators share the name {dup}: pass a dict {{label: estimator}} instead of a list."
+            )
+        estimators = dict(zip(names, estimators))
     bts = {
         name: Backtester(returns, est, in_sample, out_of_sample, **kwargs) for name, est in estimators.items()
     }

@@ -4,7 +4,10 @@ Toolkit de recherche en allocation de portefeuille : données, estimateurs risk-
 
 ![Croissance de 1](docs/figures/report_01_wealth.png)
 
-**Documentation complète : [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)**, également en PDF LaTeX : [`docs/methodology.pdf`](docs/methodology.pdf) (FR) et [`docs/methodology_en.pdf`](docs/methodology_en.pdf) (EN) (source `docs/methodology.tex`, compilation `cd docs && latexmk -xelatex methodology.tex`). Théorie, démonstrations, exemples chiffrés et tips de praticien pour chaque méthode d'allocation et chaque indicateur.
+**Documentation**
+- [`docs/user_guide.pdf`](docs/user_guide.pdf) : guide d'utilisation (installation, modules, recettes, erreurs fréquentes, référence API).
+- [`docs/methodology.pdf`](docs/methodology.pdf) (FR) et [`docs/methodology_en.pdf`](docs/methodology_en.pdf) (EN) : définitions, résultats et démonstrations de chaque méthode.
+- Sources LaTeX dans `docs/*.tex` ; compilation : `cd docs && latexmk -xelatex <fichier>.tex`.
 
 ## Structure
 
@@ -17,9 +20,10 @@ portopt/
 ├── plot.py         # graphiques fond blanc, palette validée daltonisme, rapport PNG complet
 └── fonts/          # Space Grotesk / Space Mono (OFL)
 docs/
-├── METHODOLOGY.md  # le guide
-├── methodology.tex # le guide en LaTeX (-> methodology.pdf)
-├── methodology_en.tex # version anglaise (-> methodology_en.pdf)
+├── METHODOLOGY.md  # version markdown antérieure (la référence est le PDF)
+├── methodology.tex # méthodologie FR (-> methodology.pdf)
+├── methodology_en.tex # méthodologie EN (-> methodology_en.pdf)
+├── user_guide.tex  # guide d'utilisation (-> user_guide.pdf)
 ├── make_figures.py # régénère toutes les figures du guide
 └── figures/
 examples/run_backtest.py

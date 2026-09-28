@@ -35,7 +35,7 @@
 \usepackage{graphicx}
 \graphicspath{{figures/}}
 \usepackage[font=small,labelfont={sf,bf},labelsep=period,skip=6pt]{caption}
-\usepackage{booktabs,tabularx,array,multirow}
+\usepackage{booktabs,tabularx,array}
 \usepackage[section]{placeins}
 \usepackage{enumitem}
 \setlist{itemsep=2pt,topsep=4pt,leftmargin=*}
@@ -43,63 +43,59 @@
 \usepackage{titlesec}
 \usepackage[most]{tcolorbox}
 \usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage[round,authoryear]{natbib}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{colorlinks=true,linkcolor=accent,citecolor=accent,urlcolor=accent,
-  pdftitle={Risk-based portfolio allocation: methodology},
+  pdftitle={portopt: methodology},
   pdfauthor={Jean Philippe N'DRI}}
 
 % ----------------------------------------------------------------- headings
-\titleformat{\section}{\headfont\Large\color{ink}}
-  {\color{accent}\thesection}{0.8em}{}
-\titleformat{\subsection}{\headfont\large\color{ink}}
-  {\color{accent}\thesubsection}{0.7em}{}
-\titleformat{\subsubsection}{\headfont\normalsize\color{ink}}
-  {\color{accent}\thesubsubsection}{0.6em}{}
+\titleformat{\section}{\headfont\Large\color{ink}}{\color{accent}\thesection}{0.8em}{}
+\titleformat{\subsection}{\headfont\large\color{ink}}{\color{accent}\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\headfont\normalsize\color{ink}}{}{0em}{}
 \titlespacing*{\section}{0pt}{2.2ex plus .5ex}{1.2ex}
 \titlespacing*{\subsection}{0pt}{1.8ex plus .4ex}{0.9ex}
-\titlespacing*{\subsubsection}{0pt}{1.4ex plus .3ex}{0.6ex}
-\setcounter{secnumdepth}{3}
+\titlespacing*{\subsubsection}{0pt}{1.4ex plus .3ex}{0.5ex}
+\setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
 
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\headrule}{\color{rule}\hrule height\headrulewidth}
-\fancyhead[L]{\sffamily\footnotesize\color{ink2}portopt \textperiodcentered{} Methodology}
+\fancyhead[L]{\sffamily\footnotesize\color{ink2}portopt \textperiodcentered{} Documentation}
 \fancyhead[R]{\sffamily\footnotesize\color{ink2}\nouppercase{\leftmark}}
 \fancyfoot[C]{\sffamily\footnotesize\color{ink2}\thepage}
 \renewcommand{\sectionmark}[1]{\markboth{\thesection\quad #1}{}}
 
-% ----------------------------------------------------------------- theorems
-\newtheoremstyle{portopt}{8pt}{8pt}{\itshape}{}{\sffamily\bfseries\color{ink}}{.}{0.5em}{}
-\theoremstyle{portopt}
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheoremstyle{portoptdef}{8pt}{8pt}{}{}{\sffamily\bfseries\color{ink}}{.}{0.5em}{}
-\theoremstyle{portoptdef}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{remark}[theorem]{Remark}
+% ----------------------------------------------------------------- statements
+\newtheoremstyle{pstate}{8pt}{8pt}{\itshape}{}{\sffamily\bfseries\color{ink}}{.}{0.5em}{}
+\newtheoremstyle{pdef}{8pt}{8pt}{}{}{\sffamily\bfseries\color{ink}}{.}{0.5em}{}
+\theoremstyle{pdef}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{pstate}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
 \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
 \makeatletter
 \renewenvironment{proof}[1][\proofname]{\par\pushQED{\qed}\normalfont
   \topsep6pt\trivlist\item[\hskip\labelsep{\sffamily\bfseries #1.}]\ignorespaces}
   {\popQED\endtrivlist\@endpefalse}
 \makeatother
+\newcommand{\admitted}[1]{{\upshape\small\color{ink2}(admitted, #1)}}
 
 % ----------------------------------------------------------------- boxes
 \tcbset{pbox/.style={enhanced,breakable,boxrule=0pt,arc=2pt,outer arc=2pt,
   left=10pt,right=10pt,top=6pt,bottom=6pt,before skip=10pt,after skip=10pt,
   fonttitle=\sffamily\bfseries\small,coltitle=ink,
   attach title to upper={\par\smallskip},fontupper=\small\raggedright}}
-\newtcolorbox{tip}[1][]{pbox,colback=warmsoft,
-  borderline west={2.5pt}{0pt}{warm},title={Practitioner's tip},#1}
-\newtcolorbox{example}[1][Worked example]{pbox,colback=greensoft,
-  borderline west={2.5pt}{0pt}{green},title={#1}}
-\newtcolorbox{code}{pbox,colback=accentsoft,
-  borderline west={2.5pt}{0pt}{accent},title={In the code}}
+\newtcolorbox{code}{pbox,colback=accentsoft,borderline west={2.5pt}{0pt}{accent},title={In the code}}
+\newtcolorbox{practice}{pbox,colback=warmsoft,borderline west={2.5pt}{0pt}{warm},title={In practice}}
+\newtcolorbox{example}[1][Example]{pbox,colback=greensoft,borderline west={2.5pt}{0pt}{green},title={#1}}
 
 \lstset{basicstyle=\ttfamily\small,columns=fullflexible,keepspaces=true,
   backgroundcolor=\color{accentsoft},frame=none,xleftmargin=8pt,xrightmargin=8pt,
@@ -117,21 +113,24 @@
 % ----------------------------------------------------------------- macros
 \newcommand{\py}[1]{{\ttfamily\hyphenchar\font=-1 \detokenize{#1}}}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\T}{^{\top}}
 \newcommand{\pct}{\%}
+\newcommand{\simplex}{\Delta_N}
 \DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\Cov}{Cov}
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\se}{se}
-\DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand{\SR}{\mathrm{SR}}
 \newcommand{\SRh}{\widehat{\mathrm{SR}}}
 \newcommand{\VaR}{\mathrm{VaR}}
 \newcommand{\CVaR}{\mathrm{CVaR}}
 \newcommand{\CAGR}{\mathrm{CAGR}}
 \newcommand{\MaxDD}{\mathrm{MaxDD}}
+\newcommand{\RC}{\mathrm{RC}}
+\newcommand{\MRC}{\mathrm{MRC}}
 \newcommand{\sMV}{\sigma_{\mathrm{MV}}}
 \newcommand{\sERC}{\sigma_{\mathrm{ERC}}}
 \newcommand{\sEW}{\sigma_{1/N}}
@@ -146,10 +145,10 @@
 % =============================================================================
 \begin{document}
 
-% ----------------------------------------------------------------- title page
+% ----------------------------------------------------------------- title
 \begin{titlepage}
 \newgeometry{margin=2.5cm,top=3cm}
-{\sffamily\small\color{ink2}portopt \textperiodcentered{} Technical documentation \textperiodcentered{} v0.1.0}
+{\sffamily\small\color{ink2}portopt \textperiodcentered{} Documentation \textperiodcentered{} v0.1.0}
 
 \vspace{3.2cm}
 {\headfont\fontsize{30}{36}\selectfont\color{ink} Risk-based\\[4pt] portfolio allocation\par}
@@ -157,16 +156,15 @@
 {\color{accent}\rule{3.2cm}{2.5pt}}
 \vspace{14pt}
 
-{\sffamily\Large\color{ink2} Methodology, proofs\\ and performance measurement\par}
+{\sffamily\Large\color{ink2} A guide to the portopt library:\\ definitions, results and proofs\par}
 
 \vspace{1.4cm}
-\begin{minipage}{0.86\linewidth}
-\small
-This document describes the methods implemented in the \py{portopt} library:
-covariance estimation, risk contributions, 1/N, inverse volatility, risk budgeting,
-ERC and HRP allocations, walk-forward backtesting, performance and risk metrics, and
-significance tests. Each method is presented through its intuition, its theory with
-proofs, a worked example, practitioner's tips and where it lives in the code.
+\begin{minipage}{0.86\linewidth}\small
+\py{portopt} compares risk-based allocation rules (1/N, inverse volatility, risk
+budgeting, ERC, HRP) in a walk-forward backtest, then measures their performance and
+risk. This guide first introduces the library, then covers each building block with the
+same structure: definition, result, proof, call in the code. Every stated result is
+either proved or flagged as admitted, with its reference.
 \end{minipage}
 
 \vfill
@@ -177,663 +175,600 @@ proofs, a worked example, practitioner's tips and where it lives in the code.
 \begin{tabular}{@{}l@{\hspace{1.2cm}}l@{}}
 \color{ink2}Author & Jean Philippe N'DRI \\
 \color{ink2}Version & September 2026 \\
-\color{ink2}Code & \py{portopt/} \quad\color{ink2}Figures\color{ink}\; \py{docs/make_figures.py}
+\color{ink2}Code & \py{portopt/}
 \end{tabular}}
 \restoregeometry
 \end{titlepage}
 
-% ----------------------------------------------------------------- contents
 {\hypersetup{linkcolor=ink}\tableofcontents}
 \thispagestyle{fancy}
+\newpage
 
-\vspace{1cm}
-\subsection*{Notation}
-\begin{tabularx}{\linewidth}{@{}>{$}l<{$}X@{}}
+% =============================================================================
+\section{Getting started}\label{sec:start}
+
+\subsection{What the library does}
+
+\py{portopt} answers one question: \emph{which allocation rule would have delivered the
+best return/risk trade-off, without using any future information?} It follows a
+four-step flow, one module per step.
+
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=accent,fill=accentsoft,rounded corners=3pt,line width=0.8pt,
+    minimum width=2.75cm,minimum height=1.3cm,align=center,font=\sffamily\small},
+  lab/.style={font=\scriptsize,text=ink2,align=center},
+  arr/.style={-{Stealth[length=6pt]},line width=0.8pt,color=ink2}]
+\node[box] (d) {\textbf{data}\\[1pt]{\scriptsize prices $\to$ returns}};
+\node[box,right=1.15cm of d] (e) {\textbf{estimator}\\[1pt]{\scriptsize window $\to$ weights}};
+\node[box,right=1.15cm of e] (b) {\textbf{backtester}\\[1pt]{\scriptsize weights $\to$ returns}};
+\node[box,right=1.15cm of b] (m) {\textbf{metric, plot}\\[1pt]{\scriptsize returns $\to$ report}};
+\draw[arr] (d) -- node[above,lab]{$R$} node[below,lab]{$T\times N$} (e);
+\draw[arr] (e) -- node[above,lab]{$w$} node[below,lab]{$N$} (b);
+\draw[arr] (b) -- node[above,lab]{$R_p$} node[below,lab]{$T-L$} (m);
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}
+\item \textbf{data} downloads prices, cleans them and computes the returns $R$, a
+\py{DataFrame} of $T$ dates by $N$ assets (section~\ref{sec:data}).
+\item \textbf{estimator} turns a window of returns into weights $w$: this is the
+\emph{allocation rule} (sections~\ref{sec:cov} to~\ref{sec:alloc}).
+\item \textbf{backtester} applies the rule at every rebalancing date, lets the portfolio
+evolve between dates and returns its out-of-sample returns $R_p$
+(section~\ref{sec:backtest}).
+\item \textbf{metric} and \textbf{plot} summarize these returns into metrics and charts
+(sections~\ref{sec:perf} to~\ref{sec:stats}).
+\end{enumerate}
+
+\subsection{First backtest}
+
+\begin{lstlisting}
+pip install -e ".[dev]"      # numpy, pandas, scipy, yfinance, matplotlib, pytest
+\end{lstlisting}
+
+\begin{lstlisting}
+from portopt import load_returns, EqualWeight, ERC, HRP, run_backtests, summary
+from portopt import plot
+
+# 1. data: daily returns, T dates x N assets
+R = load_returns(["SPY", "TLT", "GLD", "DBC", "EFA"], start="2008-01-01")
+
+# 2. estimator: the allocation rules to compare
+rules = {"1/N": EqualWeight(), "ERC": ERC(), "HRP": HRP()}
+
+# 3. backtester: 252-day window, rebalancing every 21 days
+rets, bts = run_backtests(R, rules, in_sample=252, out_of_sample=21,
+                          transaction_cost_bps=5)
+
+# 4. metric and plot
+print(summary(rets))
+plot.save_report(rets, bts, "outputs/charts")
+\end{lstlisting}
+
+\py{rets} holds one daily out-of-sample return per strategy, and
+\py{bts["ERC"].weights_} the ERC weights at each rebalancing. Without network access,
+the \py{simulate_returns()} function of the \py{data} module provides a simulated
+universe of 10 ETFs.
+
+\subsection{Writing your own rule}
+
+A rule inherits from \py{BaseEstimator} and implements \py{_compute_weights}. The
+backtester accepts it as is.
+
+\begin{lstlisting}
+import numpy as np
+from portopt import BaseEstimator
+
+class InverseVariance(BaseEstimator):
+    def _compute_weights(self, returns):
+        cov = self._cov(returns)          # applies cov_method
+        return 1.0 / np.diag(cov)
+\end{lstlisting}
+
+\py{fit} does the rest: it rejects windows with missing values, sets negative weights
+to zero, normalizes the sum to 1 and stores the result in \py{weights_}, a
+\py{pd.Series} indexed by asset.
+
+\subsection{API map}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright}X>{\raggedright\arraybackslash}p{1.5cm}@{}}
 \toprule
-N,\ T & number of assets, number of observations \\
-R_t\in\R^N & simple returns of the assets at date $t$ (close $t-1$ to close $t$) \\
-w\in\R^N & portfolio weights, $\one\T w=1$, $w\ge 0$ (long-only) \\
-\Sigma,\ \sigma_i,\ \rho_{ij} & covariance matrix, volatilities $\sigma_i=\sqrt{\Sigma_{ii}}$, correlations \\
-\sigma_p(w) & portfolio volatility, $\sqrt{w\T\Sigma w}$ \\
-S & sample covariance \\
-P & number of periods per year ($P=252$ for daily data) \\
-L,\ H & in-sample window length, holding period (backtest) \\
-\bar R,\ \hat\sigma & sample mean and standard deviation (\py{ddof=1}) \\
+Object & Role & Section \\
+\midrule
+\py{load_returns}, \py{download_prices} & get prices and returns & \ref{sec:data} \\
+\py{clean_prices}, \py{compute_returns} & clean data, compute returns & \ref{sec:data} \\
+\py{simulate_returns} & simulated universe for offline work & \ref{sec:data} \\
+\py{estimate_cov}, \py{ledoit_wolf_cov}, \py{ewma_cov} & estimate the covariance & \ref{sec:cov} \\
+\py{risk_contributions} & risk contributions & \ref{sec:rc} \\
+\py{EqualWeight}, \py{InverseVolatility} & rules without optimization & \ref{sec:ew}, \ref{sec:iv} \\
+\py{RiskParity}, \py{ERC} & risk budgeting, equal contributions & \ref{sec:rb}, \ref{sec:erc} \\
+\py{HRP} & Hierarchical Risk Parity & \ref{sec:hrp} \\
+\py{Backtester}, \py{run_backtests} & walk-forward backtest & \ref{sec:backtest} \\
+\py{summary}, \py{metric} module & performance and risk metrics & \ref{sec:perf}--\ref{sec:stats} \\
+\py{plot.save_report} & chart report (PNG) & \ref{sec:example} \\
 \bottomrule
 \end{tabularx}
+\end{center}
 
-Figures are produced on simulated data from \py{portopt.data.simulate_returns}
-(10 multi-asset ETFs, 15 years, stress regimes and fat tails) with
-\py{python docs/make_figures.py}.
+\subsection{Notation}
 
-\newpage
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}>{$}l<{$}X@{}}
+\toprule
+N,\ T & number of assets, number of dates \\
+R_t\in\R^N & simple returns of the assets, from the close of $t-1$ to the close of $t$ \\
+\simplex & $\{w\in\R^N : w\ge0,\ \one\T w=1\}$, the set of long-only portfolios \\
+\Sigma,\ \sigma_i,\ \rho_{ij} & covariance, volatilities $\sigma_i=\sqrt{\Sigma_{ii}}$, correlations \\
+P & number of periods per year (252 for daily data) \\
+L,\ H & estimation window length, holding period \\
+\bar R,\ \hat\sigma & sample mean and standard deviation \\
+\Phi,\ \varphi & cumulative distribution function and density of the standard normal \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
 % =============================================================================
-\section{Data and returns}\label{sec:data}
+\section{Returns and portfolio}\label{sec:data}
 
-\subsection{Simple and log returns}
-
-\begin{definition}
-For a price $P_t$, the simple return and the log return are
+\begin{definition}[returns]
+For a price $P_t$ adjusted for dividends and splits, the simple return and the log
+return are
 \[
 R_t=\frac{P_t}{P_{t-1}}-1,\qquad r_t=\ln\frac{P_t}{P_{t-1}}=\ln(1+R_t).
 \]
 \end{definition}
 
-Their aggregation properties are opposite.
-
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-\toprule
-& Cross-sectional aggregation (across assets) & Time aggregation \\
-\midrule
-Simple $R$ & $R_{p,t}=\sum_i w_iR_{i,t}$ \quad exact & $\prod_t(1+R_t)-1$ \\
-Log $r$ & $r_{p,t}\neq\sum_i w_ir_{i,t}$ & $\sum_t r_t$ \quad exact \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{definition}[portfolio]
+A portfolio is a vector $w\in\simplex$: $w_i$ is the share of value invested in asset
+$i$. Its return is denoted $R_{p,t}$.
+\end{definition}
 
 \begin{proposition}\label{prop:simple}
-The simple return of a portfolio is the weighted average of the simple returns of its
-assets, $R_{p,t}=w\T R_t$, where $w$ are the value weights at $t-1$. The property does
-not hold for log returns.
+If $w$ are the weights at $t-1$, then $R_{p,t}=w\T R_t$. The analogous identity is false
+for log returns.
 \end{proposition}
 
 \begin{proof}
-The portfolio value is $V_t=\sum_i n_iP_{i,t}$ for holdings $n_i$ fixed over the period.
-Then
-\[
-\frac{V_t}{V_{t-1}}=\sum_i\frac{n_iP_{i,t-1}}{V_{t-1}}\cdot\frac{P_{i,t}}{P_{i,t-1}}
-=\sum_i w_i(1+R_{i,t}),
-\]
-hence $R_{p,t}=w\T R_t$. For log returns, $r_{p,t}=\ln\sum_iw_ie^{r_{i,t}}$, and by strict
-concavity of the logarithm (Jensen), $\ln\sum_iw_ie^{r_i}>\sum_iw_ir_i$ as soon as the
-$r_i$ are not all equal.
+Let $n_i$ be the number of units of asset $i$ held and $V_t=\sum_in_iP_{i,t}$. Then
+$V_t/V_{t-1}=\sum_i\frac{n_iP_{i,t-1}}{V_{t-1}}\cdot\frac{P_{i,t}}{P_{i,t-1}}=\sum_iw_i(1+R_{i,t})$,
+hence $R_{p,t}=w\T R_t$. For log returns, $r_{p,t}=\ln\sum_iw_ie^{r_{i,t}}$, which is
+strictly greater than $\sum_iw_ir_{i,t}$ as soon as the $r_{i,t}$ differ (strict
+concavity of the logarithm).
 \end{proof}
 
-\textbf{Consequence.} Portfolio construction and backtesting are always done in simple
-returns. Log returns are for statistical modelling (more symmetric, additive over
-time). Useful relation: $r=\ln(1+R)=R-R^2/2+O(R^3)$, a negligible gap at daily
-frequency but not at annual frequency.
+The whole library therefore works with \textbf{simple returns}.
 
-\subsection{Time alignment}
+\begin{definition}[portfolio volatility]
+If $\Sigma$ is the covariance of returns, the variance and volatility of portfolio $w$
+are $\sigma_p^2(w)=w\T\Sigma w$ and $\sigma_p(w)=\sqrt{w\T\Sigma w}$.
+\end{definition}
 
-In \py{portopt}, $R_t$ dated $t$ is the return from the close of $t-1$ to the close of
-$t$. A weight decided with the information available at the close of $t-1$ earns $R_t$.
-This alignment is what rules out look-ahead bias in the backtest
-(section~\ref{sec:backtest}).
+\begin{definition}[annualization]
+For returns with $P$ periods per year: $\mu_{\mathrm{ann}}=P\,\bar R$ and
+$\sigma_{\mathrm{ann}}=\sqrt P\,\hat\sigma$.
+\end{definition}
 
-\subsection{Cleaning}
+\begin{proposition}\label{prop:annual}
+If the returns of the $P$ periods of a year are independent, with mean $\mu$ and variance
+$\sigma^2$, and the annual return is their sum, then it has mean $P\mu$ and standard
+deviation $\sqrt P\,\sigma$.
+\end{proposition}
 
-\py{clean_prices} applies three rules.
-\begin{enumerate}
-\item \textbf{Limited forward-fill} (\py{ffill_limit=5}): fills exchange holidays when
-mixing markets. Beyond that, a gap is genuinely missing data.
-\item \textbf{Never back-fill}: \py{bfill} copies a future price into the past, which is
-look-ahead bias in disguise.
-\item \textbf{Leading NaNs are kept}: an ETF launched in 2012 has NaNs before. The
-backtester only invests in it once it has a full in-sample window. Dropping
-``incomplete'' assets upfront would keep only the survivors: \emph{survivorship bias}.
-\end{enumerate}
+\begin{proof}
+Expectation is linear, and by independence the variance of a sum is the sum of the
+variances: $\Var\bigl(\sum_{k=1}^PX_k\bigr)=P\sigma^2$.
+\end{proof}
 
-\subsection{Adjusted prices}
-
-\py{download_prices(auto_adjust=True)} returns closes adjusted for splits and
-dividends, hence \emph{total return} series. On raw prices, every ex-dividend date looks
-like a loss: a bond ETF would artificially lose 3 to 4\pct{} a year.
+Additivity is exact for log returns and holds to first order for daily simple returns.
+This is what justifies the factors $P$ and $\sqrt P$.
 
 \begin{code}
-\py{portopt/data.py}: \py{download_prices}, \py{clean_prices}, \py{compute_returns},
-\py{resample_returns}, \py{load_returns}, \py{simulate_returns}.
+\py{load_returns(tickers, start, end, cache_dir="data_cache")} downloads adjusted
+prices, cleans them and returns simple returns. Cleaning (\py{clean_prices}) fills gaps
+of at most 5 days with the last known value, never fills with a future value, and keeps
+the missing values of an asset not yet listed: the backtester only invests in it once
+its history is complete.
 \end{code}
 
 % =============================================================================
 \section{Estimating the covariance}\label{sec:cov}
 
-Every method except 1/N consumes $\Sigma$. The quality of the allocation is bounded by
-the quality of this estimator.
+Every rule except 1/N uses an estimate of $\Sigma$ over the window.
 
-\subsection{Sample covariance}
-
-\[
-S=\frac{1}{T-1}\sum_{t=1}^T(R_t-\bar R)(R_t-\bar R)\T .
-\]
-$S$ is unbiased but noisy as soon as $N/T$ is not small. It has $N(N+1)/2$ parameters:
-55 for 10 assets, 5{,}050 for 100 assets. With $T=252$, estimating 5{,}050 parameters
-from 25{,}200 numbers makes no sense. If $T\le N$, $S$ has rank at most $T-1$: it is
-singular and cannot be inverted.
-
-\begin{theorem}[\citealp{marchenko1967}]
-If the $R_t$ are iid with covariance $I_N$ and $N,T\to\infty$ with $q=N/T\in(0,1]$, the
-empirical distribution of the eigenvalues of $S$ converges to a law supported on
-\[
-\lambda\in\bigl[(1-\sqrt q)^2,\ (1+\sqrt q)^2\bigr].
-\]
-\end{theorem}
-
-With $q=0.5$, the eigenvalues spread between $0.09$ and $2.91$ while they are all equal
-to 1. \textbf{Large eigenvalues are overestimated, small ones underestimated.} Yet any
-method that inverts $\Sigma$ (minimum variance, Markowitz) puts the most weight on the
-lowest-variance directions, exactly where the estimate is most wrong: this is the
-\emph{error maximization} of \citet{michaud1989}.
-
-\subsection{Ledoit-Wolf}
-
-The idea is to combine $S$ (unbiased, high variance) with a structured target (biased,
-zero variance). The optimal bias-variance trade-off has a closed form
-\citep{ledoitwolf2004}.
-
-\begin{definition}[Ledoit-Wolf estimator]
-Let $S$ be the sample covariance normalized by $T$\footnote{The paper and the code use
-the $1/T$ normalization for $S$ in the shrinkage formula; the difference with $1/(T-1)$
-is of order $1/T$.} and $\lVert A\rVert^2=\tr(AA\T)/N$ the normalized Frobenius norm.
-Let $\mu=\tr(S)/N$ and
-\[
-d^2=\lVert S-\mu I\rVert^2,\qquad
-\bar b^2=\frac{1}{T^2}\sum_{t=1}^T\lVert x_tx_t\T-S\rVert^2,\qquad
-\delta^\ast=\frac{\min(\bar b^2,d^2)}{d^2},
-\]
-where $x_t=R_t-\bar R$. The estimator is $\hat\Sigma=\delta^\ast\mu I+(1-\delta^\ast)S$.
+\begin{definition}[sample covariance]
+Over a window of $T$ dates, with $x_t=R_t-\bar R$: $S=\frac{1}{T-1}\sum_{t=1}^Tx_tx_t\T$.
 \end{definition}
 
-\textbf{Interpretation.} $d^2$ measures how far $S$ is from the target (dispersion of
-its eigenvalues). $\bar b^2$ measures how uncertain $S$ is (sampling variance estimated
-from the observations themselves). $\delta^\ast$ is the share of the observed dispersion
-attributable to noise: the smaller $T$ relative to $N$, the stronger the shrinkage.
+$S$ is unbiased but noisy. It has $N(N+1)/2$ parameters and, if $T\le N$, it has rank at
+most $T-1$, so it cannot be inverted.
 
-\textbf{Properties.} For $\delta^\ast>0$, $\hat\Sigma$ is positive definite. Eigenvalues
-are pulled toward $\mu$ \emph{without changing the eigenvectors}, and the condition
-number improves.
+\begin{theorem}[Marchenko-Pastur]\label{thm:mp}
+If the $R_t$ are independent with covariance $I_N$ and $N,T\to\infty$ with
+$N/T\to q\in(0,1]$, the eigenvalues of $S$ spread over
+$\bigl[(1-\sqrt q)^2,(1+\sqrt q)^2\bigr]$. \admitted{\citealp{marchenko1967}}
+\end{theorem}
 
-\begin{lemma}[fast computation of $\bar b^2$]
-With $S=\frac1T\sum_tx_tx_t\T$,
+Even when all true eigenvalues equal 1, those of $S$ spread from $0.09$ to $2.91$ for
+$q=0.5$. Small eigenvalues are underestimated, and they are precisely the ones that
+inverting $\Sigma$ amplifies.
+
+\begin{definition}[Ledoit-Wolf]
+Let $S_T=\frac1T\sum_tx_tx_t\T$, $\lVert A\rVert^2=\tr(AA\T)/N$ and $\mu=\tr(S_T)/N$.
+Define
 \[
-\sum_{t=1}^T\lVert x_tx_t\T-S\rVert_F^2=\sum_{t=1}^T(x_t\T x_t)^2-T\lVert S\rVert_F^2 .
+d^2=\lVert S_T-\mu I\rVert^2,\quad
+\bar b^2=\frac1{T^2}\sum_{t=1}^T\lVert x_tx_t\T-S_T\rVert^2,\quad
+\delta^\ast=\frac{\min(\bar b^2,d^2)}{d^2}\in[0,1],\quad
+\hat\Sigma=\delta^\ast\mu I+(1-\delta^\ast)S_T .
 \]
-\end{lemma}
+\end{definition}
 
-\begin{proof}
-$\lVert x_tx_t\T-S\rVert_F^2=(x_t\T x_t)^2-2\,x_t\T Sx_t+\lVert S\rVert_F^2$. Moreover
-$\sum_tx_t\T Sx_t=\tr\bigl(S\sum_tx_tx_t\T\bigr)=T\tr(S^2)=T\lVert S\rVert_F^2$.
-Summing: $\sum_t(x_t\T x_t)^2-2T\lVert S\rVert_F^2+T\lVert S\rVert_F^2$.
-\end{proof}
+$d^2$ measures the distance from $S_T$ to the target $\mu I$, $\bar b^2$ the estimation
+noise of $S_T$; $\delta^\ast$ is the share of the distance attributed to noise. This
+choice asymptotically minimizes the quadratic error among combinations of $S_T$ and
+$\mu I$ \admitted{\citealp{ledoitwolf2004}}.
 
-The $\bar b^2$ term therefore costs $O(TN)$ on top of computing $S$, without forming the
-$T$ matrices $x_tx_t\T$.
-
-\fig{lw_spectrum.png}{Eigenvalue spectrum, 50 assets and 75 days, true one-factor model.
-The sample covariance crushes the small eigenvalues (the last one is more than 10 times
-too small); Ledoit-Wolf lifts them and divides the condition number by 5.}
-
-\subsection{EWMA}
-
-\[
-\hat\Sigma_t=\sum_{s=0}^{T-1}\omega_s(R_{t-s}-\bar R)(R_{t-s}-\bar R)\T,\qquad
-\omega_s\propto\lambda^s,\quad\lambda=2^{-1/h},
-\]
-with $h$ the half-life (63 days by default), in the spirit of RiskMetrics
-\citep{riskmetrics1996}. The effective number of observations
-$(\sum\omega_s)^2/\sum\omega_s^2\approx(1+\lambda)/(1-\lambda)$ is about 180 days for
-$h=63$: more responsive to regime changes, but noisier.
-
-\begin{tip}
-\begin{itemize}
-\item The choice of covariance estimator often matters more than the choice between ERC
-and HRP.
-\item Means are much harder to estimate than covariances. The standard error of an
-annualized mean is $\sigma/\sqrt{Y}$ with $Y$ the number of years: with $\sigma=16\pct$
-and 10 years, $\pm5\pct$ on a mean of 8\pct. It does not depend on the sampling
-frequency. The error on a variance shrinks with the number of observations: moving to
-daily data helps. This is the fundamental reason why every method in this document
-ignores expected returns.
-\item Beyond 50 assets, prefer a factor model $\Sigma=B\Sigma_FB\T+D$ or nonlinear
-shrinkage \citep{ledoitwolf2020}.
-\end{itemize}
-\end{tip}
-
-\begin{code}
-\py{portopt/estimator.py}: \py{sample_cov}, \py{ledoit_wolf_cov}, \py{ewma_cov},
-\py{estimate_cov}. Every estimator accepts
-\py{cov_method="sample" | "ledoit_wolf" | "ewma"} or a callable
-\py{returns -> ndarray}.
-\end{code}
-
-% =============================================================================
-\section{The common building block: risk contributions}\label{sec:rc}
-
-\subsection{Euler decomposition}
-
-\begin{proposition}\label{prop:euler}
-The volatility $\sigma_p(w)=\sqrt{w\T\Sigma w}$ is homogeneous of degree 1 and
-\[
-\sigma_p(w)=\sum_{i=1}^Nw_i\,\frac{\partial\sigma_p}{\partial w_i}(w),\qquad
-\frac{\partial\sigma_p}{\partial w}=\frac{\Sigma w}{\sigma_p}.
-\]
+\begin{proposition}\label{prop:lw}
+Let $\lambda_1\ge\dots\ge\lambda_N$ be the eigenvalues of $S_T$ and $\delta^\ast>0$.
+\begin{enumerate}[label=(\roman*)]
+\item $\hat\Sigma$ has the same eigenvectors as $S_T$, with eigenvalues
+$\delta^\ast\mu+(1-\delta^\ast)\lambda_j$, and it is positive definite.
+\item Its condition number $\lambda_{\max}/\lambda_{\min}$ is lower than that of $S_T$.
+\end{enumerate}
 \end{proposition}
 
 \begin{proof}
-$\sigma_p(\lambda w)=\lambda\sigma_p(w)$ for $\lambda>0$. Differentiating with respect to
-$\lambda$ and evaluating at $\lambda=1$ gives $\sum_iw_i\,\partial_i\sigma_p(w)=\sigma_p(w)$
-(Euler's theorem for homogeneous functions). The gradient follows from differentiating
-$\sqrt{w\T\Sigma w}$.
+(i) If $S_Tv=\lambda v$, then $\hat\Sigma v=(\delta^\ast\mu+(1-\delta^\ast)\lambda)v$, and
+these values are at least $\delta^\ast\mu>0$.
+(ii) With $a=\delta^\ast\mu>0$ and $c=1-\delta^\ast$, the inequality
+$\frac{a+c\lambda_1}{a+c\lambda_N}\le\frac{\lambda_1}{\lambda_N}$ is equivalent to
+$a\lambda_N\le a\lambda_1$, which holds.
 \end{proof}
 
-\begin{definition}
+\begin{lemma}[computing $\bar b^2$ without forming the $x_tx_t\T$]
+$\sum_t\lVert x_tx_t\T-S_T\rVert_F^2=\sum_t(x_t\T x_t)^2-T\lVert S_T\rVert_F^2$.
+\end{lemma}
+
+\begin{proof}
+$\lVert x_tx_t\T-S_T\rVert_F^2=(x_t\T x_t)^2-2x_t\T S_Tx_t+\lVert S_T\rVert_F^2$, and
+$\sum_tx_t\T S_Tx_t=\tr\bigl(S_T\sum_tx_tx_t\T\bigr)=T\lVert S_T\rVert_F^2$.
+\end{proof}
+
+\fig[0.92\linewidth]{lw_spectrum.png}{Eigenvalues of the true covariance, the sample
+covariance and Ledoit-Wolf (50 assets, 75 dates). Shrinkage lifts the small eigenvalues
+and divides the condition number by 5.}
+
+\begin{definition}[EWMA]
+For a half-life $h$, let $\lambda=2^{-1/h}$ and $\omega_s=\lambda^s/\sum_u\lambda^u$,
+where $s=0$ is the most recent date. Then
+$\hat\Sigma=\sum_s\omega_s(R_{t-s}-\bar R_\omega)(R_{t-s}-\bar R_\omega)\T$, with
+$\bar R_\omega=\sum_s\omega_sR_{t-s}$.
+\end{definition}
+
+\begin{proposition}
+Over an infinite history, the effective number of observations
+$(\sum_s\omega_s)^2/\sum_s\omega_s^2$ equals $(1+\lambda)/(1-\lambda)$, about 182 for
+$h=63$.
+\end{proposition}
+
+\begin{proof}
+$\sum_s\lambda^s=\frac1{1-\lambda}$ and $\sum_s\lambda^{2s}=\frac1{1-\lambda^2}$, so the
+ratio is $\frac{1-\lambda^2}{(1-\lambda)^2}=\frac{1+\lambda}{1-\lambda}$.
+\end{proof}
+
+\begin{code}
+Every rule accepts \py{cov_method="sample" | "ledoit_wolf" | "ewma"} or a function
+\py{returns -> ndarray}. Directly: \py{estimate_cov(R, "ledoit_wolf")},
+\py{ledoit_wolf_cov(R)} which returns \py{(Sigma, delta)}, \py{ewma_cov(R, halflife=63)}.
+\end{code}
+
+\begin{practice}
+No rule in the library uses expected returns. The standard error of an annualized mean
+is $\sigma/\sqrt Y$ over $Y$ years, whatever the frequency ($\pm5\pct$ for
+$\sigma=16\pct$ and 10 years), whereas the error on a variance shrinks with the number
+of observations: covariances are estimated much better than means.
+\end{practice}
+
+% =============================================================================
+\section{Risk contributions}\label{sec:rc}
+
+\begin{proposition}[Euler decomposition]\label{prop:euler}
+For any $w$ with $\sigma_p(w)>0$:
+$\dfrac{\partial\sigma_p}{\partial w}=\dfrac{\Sigma w}{\sigma_p}$ and
+$\sigma_p(w)=\sum_{i=1}^Nw_i\,\dfrac{\partial\sigma_p}{\partial w_i}(w)$.
+\end{proposition}
+
+\begin{proof}
+The gradient follows from differentiating $\sqrt{w\T\Sigma w}$. Then
+$\sum_iw_i(\Sigma w)_i/\sigma_p=w\T\Sigma w/\sigma_p=\sigma_p$.
+\end{proof}
+
+\begin{definition}[risk contributions]
 Marginal, total and relative risk contribution of asset $i$:
 \[
-\mathrm{MRC}_i=\frac{(\Sigma w)_i}{\sigma_p},\qquad
-\mathrm{RC}_i=w_i\frac{(\Sigma w)_i}{\sigma_p},\qquad
-\frac{\mathrm{RC}_i}{\sigma_p}=\frac{w_i(\Sigma w)_i}{w\T\Sigma w}.
+\MRC_i=\frac{(\Sigma w)_i}{\sigma_p},\qquad\RC_i=w_i\MRC_i,\qquad
+\frac{\RC_i}{\sigma_p}=\frac{w_i(\Sigma w)_i}{w\T\Sigma w}.
 \]
-By proposition~\ref{prop:euler}, $\sum_i\mathrm{RC}_i=\sigma_p$ and the relative
+By proposition~\ref{prop:euler}, the $\RC_i$ sum to $\sigma_p$ and the relative
 contributions sum to 1.
 \end{definition}
 
-\subsection{Interpretation}
+\begin{proposition}\label{prop:beta}
+$\MRC_i=\beta_{i,p}\,\sigma_p=\rho_{i,p}\,\sigma_i$, where $\beta_{i,p}$ and $\rho_{i,p}$
+are the beta and the correlation of asset $i$ with the portfolio.
+\end{proposition}
 
-Since $(\Sigma w)_i=\Cov(R_i,R_p)$,
-\[
-\mathrm{MRC}_i=\frac{\Cov(R_i,R_p)}{\sigma_p}=\rho_{i,p}\,\sigma_i=\beta_{i,p}\,\sigma_p .
-\]
-An asset contributes to risk in proportion to its \textbf{beta to the portfolio}, not to
-its own volatility. A very volatile asset that is uncorrelated with the portfolio
-contributes little; an asset with $\rho_{i,p}<0$ has a negative contribution: it
-reduces risk.
+\begin{proof}
+$(\Sigma w)_i=\Cov(R_i,w\T R)=\Cov(R_i,R_p)$. With
+$\beta_{i,p}=\Cov(R_i,R_p)/\sigma_p^2$ and $\rho_{i,p}=\Cov(R_i,R_p)/(\sigma_i\sigma_p)$,
+both identities follow.
+\end{proof}
+
+An asset weighs on risk through its beta to the portfolio, not through its own
+volatility. If it is negatively correlated with the portfolio, its contribution is
+negative.
 
 \begin{example}
-A 60/40 equity/bond portfolio, $\sigma_E=16\pct$, $\sigma_B=6\pct$, $\rho=-0.2$.
-\begin{align*}
-\sigma_p^2&=0.6^2\cdot0.16^2+0.4^2\cdot0.06^2+2\cdot0.6\cdot0.4\cdot(-0.2)\cdot0.16\cdot0.06\\
-&=0.009216+0.000576-0.000922=0.008870,\qquad\sigma_p=9.4\pct,\\
-(\Sigma w)_E&=0.6\cdot0.0256+0.4\cdot(-0.00192)=0.014592,\\
-\mathrm{RC}_E/\sigma_p&=0.6\cdot0.014592/0.008870=98.7\pct,\qquad
-\mathrm{RC}_B/\sigma_p=1.3\pct.
-\end{align*}
-A 60/40 portfolio in capital is a 99/1 portfolio in risk. This is the historical
-motivation for risk parity.
+60/40 equity/bond portfolio, $\sigma_E=16\pct$, $\sigma_B=6\pct$, $\rho=-0.2$:
+$\sigma_p^2=0.36\cdot0.0256+0.16\cdot0.0036-0.48\cdot0.2\cdot0.0096=0.00887$, so
+$\sigma_p=9.4\pct$. Then $(\Sigma w)_E=0.6\cdot0.0256-0.4\cdot0.00192=0.01459$ and
+$\RC_E/\sigma_p=0.6\cdot0.01459/0.00887=98.7\pct$: a 60/40 portfolio in capital is a
+99/1 portfolio in risk.
 \end{example}
 
 \begin{code}
-\py{portopt.estimator.risk_contributions(w, cov)};
-\py{Backtester.risk_contributions()} returns the ex ante contributions at each
-rebalancing.
+\py{risk_contributions(w, cov)} returns the relative contributions;
+\py{Backtester.risk_contributions()} gives them at every rebalancing.
 \end{code}
 
 % =============================================================================
-\section{Allocation methods}\label{sec:alloc}
+\section{Allocation rules}\label{sec:alloc}
 
-All estimators share the same interface:
-\begin{lstlisting}
-est = ERC(cov_method="ledoit_wolf").fit(returns_is)  # T x N DataFrame, no NaN
-est.weights_   # pd.Series, sums to 1, long-only
-est.cov_       # covariance used
-\end{lstlisting}
+\begin{definition}[allocation rule]
+An allocation rule is a function $\mathcal A$ that maps a window of returns
+$(R_{t-L},\dots,R_{t-1})$ to a portfolio $w\in\simplex$. In the library, it is a
+\py{BaseEstimator}: \py{est.fit(window).weights_}.
+\end{definition}
 
 % -----------------------------------------------------------------------------
-\subsection{Equal weight (1/N)}
+\subsection{Equal Weight (1/N)}\label{sec:ew}
 
-\[
-w_i=\frac1N .
-\]
+\begin{definition}
+$w_i=1/N$ for all $i$.
+\end{definition}
 
-\textbf{Intuition.} Estimate nothing, so estimate nothing wrong.
+\begin{proposition}\label{prop:ew}
+If all assets have volatility $\sigma$ and pairwise correlations $\rho$, then
+$\sigma_{1/N}^2=\frac{\sigma^2}{N}\bigl(1+(N-1)\rho\bigr)\to\rho\sigma^2$ as $N\to\infty$.
+\end{proposition}
 
-\textbf{Theory.} If the $N$ assets share the same volatility $\sigma$ and the same
-correlation $\rho$,
-\[
-\sigma_p^2=\frac{\sigma^2}{N}\bigl(1+(N-1)\rho\bigr)\xrightarrow[N\to\infty]{}\rho\sigma^2 :
-\]
-diversification removes idiosyncratic risk, not common risk.
+\begin{proof}
+$w\T\Sigma w=\frac1{N^2}\bigl(N\sigma^2+N(N-1)\rho\sigma^2\bigr)$.
+\end{proof}
 
-\textbf{Key result.} \citet{demiguel2009} compare 14 optimization models (Markowitz,
-Bayes-Stein, constrained minimum variance, etc.) on 7 datasets: none significantly beats
-1/N in out-of-sample Sharpe ratio. The estimation window needed for Markowitz to beat
-1/N is around 3{,}000 months for 25 assets. 1/N is the \textbf{minimum benchmark} for
-any allocation research.
-
-\textbf{Limitations.} Allocation in capital, not in risk: the most volatile asset
-dominates (section~\ref{sec:rc}). The portfolio depends on how the universe is defined:
-adding 5 equity ETFs to a universe of 10 changes it radically.
-
-\begin{tip}
-The turnover of 1/N is not zero: weights drift with prices and the portfolio must be
-rebalanced (38\pct{} a year in the example of section~\ref{sec:results}). A buy-and-hold
-1/N is no longer 1/N after six months.
-\end{tip}
+Diversification removes the risk specific to each asset but not the common risk
+$\rho\sigma^2$. 1/N estimates nothing and so makes no estimation error: it is the
+reference benchmark, which none of the 14 optimization models tested by
+\citet{demiguel2009} significantly beats out of sample.
 
 \begin{code}
 \py{EqualWeight()}
 \end{code}
 
 % -----------------------------------------------------------------------------
-\subsection{Inverse volatility}
+\subsection{Inverse volatility}\label{sec:iv}
 
-\[
-w_i=\frac{\sigma_i^{-k}}{\sum_j\sigma_j^{-k}},\qquad k=1\ \text{(inverse volatility)},\quad k=2\ \text{(inverse variance)}.
-\]
-
-\textbf{Intuition.} Give every asset the same volatility budget while ignoring
-correlations: $w_i\sigma_i$ is constant. Also called \emph{naive risk parity}.
+\begin{definition}
+$w_i=\sigma_i^{-k}/\sum_j\sigma_j^{-k}$, with $k=1$ (inverse volatility) or $k=2$
+(inverse variance).
+\end{definition}
 
 \begin{proposition}\label{prop:invvol}
 \begin{enumerate}[label=(\roman*)]
-\item If all correlations are equal ($\rho_{ij}=\rho$ for $i\ne j$), the inverse
-volatility portfolio is the ERC portfolio.
-\item If $\Sigma$ is diagonal, the inverse variance portfolio is the minimum variance
-portfolio.
+\item If all correlations are equal, inverse volatility equalizes risk contributions:
+it is the ERC portfolio (section~\ref{sec:erc}).
+\item If $\Sigma$ is diagonal, inverse variance is the minimum variance portfolio.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}
-(i) With $w_i=c/\sigma_i$:
-$(\Sigma w)_i=\sum_j\rho_{ij}\sigma_i\sigma_j\frac{c}{\sigma_j}=\sigma_i\,c\,\bigl(1+(N-1)\rho\bigr)$,
+(i) With $w_i=c/\sigma_i$ and $\rho_{ij}=\rho$ for $i\ne j$:
+$(\Sigma w)_i=\sum_j\rho_{ij}\sigma_i\sigma_j\,c/\sigma_j=c\,\sigma_i\bigl(1+(N-1)\rho\bigr)$,
 so $w_i(\Sigma w)_i=c^2\bigl(1+(N-1)\rho\bigr)$ does not depend on $i$.
 (ii) The minimum variance portfolio is $w\propto\Sigma^{-1}\one$ and, for a diagonal
-$\Sigma$, $\Sigma^{-1}\one=(1/\sigma_i^2)_i$.
+$\Sigma$, $\Sigma^{-1}\one=(\sigma_i^{-2})_i$.
 \end{proof}
 
-InvVol is thus ERC under the assumption of homogeneous correlations, and inverse
-variance is minimum variance under the assumption of zero correlations. The gap between
-InvVol and ERC measures \textbf{the information carried by the correlation structure}.
-
-\begin{tip}
-With two assets, InvVol and ERC coincide whatever $\rho$: there is only one
-correlation, so it is homogeneous.
-\end{tip}
-
 \begin{code}
-\py{InverseVolatility(exponent=1)}
+\py{InverseVolatility(exponent=1)}; \py{exponent=2} for inverse variance.
 \end{code}
 
 % -----------------------------------------------------------------------------
 \subsection{Risk budgeting}\label{sec:rb}
 
-\textbf{Problem.} Given budgets $b_i>0$ with $\sum_ib_i=1$, find $w\ge0$,
-$\one\T w=1$, such that
-\[
-\frac{w_i(\Sigma w)_i}{w\T\Sigma w}=b_i\qquad\forall i .
-\]
-This is a nonlinear system; the trick is to recast it as a convex problem.
+\begin{definition}
+Let budgets $b_i>0$ sum to 1. A risk budgeting portfolio is a $w\in\simplex$ such that
+$w_i(\Sigma w)_i/(w\T\Sigma w)=b_i$ for all $i$: asset $i$ carries the share $b_i$ of the
+risk.
+\end{definition}
 
-\begin{theorem}[\citealp{spinu2013,roncalli2013}]\label{thm:spinu}
-Let $\Sigma\succ0$ and
-\[
-y^\ast=\argmin_{y\in\R^N_{++}}\ f(y),\qquad f(y)=\tfrac12\,y\T\Sigma y-\sum_{i=1}^Nb_i\ln y_i .
-\]
-Then $y^\ast$ exists and is unique, and $w^\ast=y^\ast/\one\T y^\ast$ is the unique
-long-only risk budgeting portfolio. Moreover $y^{\ast\top}\Sigma y^\ast=1$.
+\begin{theorem}[\citealp{spinu2013}]\label{thm:spinu}
+Let $\Sigma\succ0$ and $f(y)=\frac12y\T\Sigma y-\sum_ib_i\ln y_i$ on $\R^N_{++}$. Then $f$
+has a unique minimizer $y^\ast$, and $w^\ast=y^\ast/\one\T y^\ast$ is the unique risk
+budgeting portfolio.
 \end{theorem}
 
 \begin{proof}
-\emph{Existence.} $f$ is continuous on $\R^N_{++}$. When some $y_i\to0^+$,
-$-b_i\ln y_i\to+\infty$; when $\lVert y\rVert\to\infty$,
-$\tfrac12y\T\Sigma y\ge\tfrac12\lambda_{\min}\lVert y\rVert^2$ dominates the logarithmic
-terms. $f$ is therefore coercive and attains its minimum in the interior of
-$\R^N_{++}$.
-
-\emph{Uniqueness.} $\nabla^2f(y)=\Sigma+\diag(b_i/y_i^2)\succ0$: $f$ is strictly convex.
-
-\emph{First-order condition.} $\partial_if(y)=(\Sigma y)_i-b_i/y_i=0$, i.e.
-$y_i(\Sigma y)_i=b_i$: the unnormalized risk contributions of $y^\ast$ are exactly the
-budgets.
-
-\emph{Normalization.} $y_i(\Sigma y)_i$ is homogeneous of degree 2, so the relative
-contributions of $w^\ast=y^\ast/\one\T y^\ast$ equal $b_i/\sum_jb_j=b_i$.
-
-\emph{Uniqueness of the portfolio.} If $w$ is a risk budgeting portfolio, then
-$y=w/\sqrt{w\T\Sigma w}$ satisfies $y_i(\Sigma y)_i=b_i$, hence $\nabla f(y)=0$, hence
-$y=y^\ast$ by strict convexity.
-
-Finally, summing the first-order conditions gives $y^{\ast\top}\Sigma y^\ast=\sum_ib_i=1$.
+\emph{Existence.} $f\to+\infty$ when some $y_i\to0^+$ (log term) and when
+$\lVert y\rVert\to\infty$ (the quadratic term, bounded below by
+$\frac12\lambda_{\min}(\Sigma)\lVert y\rVert^2$, dominates). The minimum is therefore
+attained in the interior of $\R^N_{++}$.
+\emph{Uniqueness.} $\nabla^2f=\Sigma+\diag(b_i/y_i^2)\succ0$: $f$ is strictly convex.
+\emph{Budgets.} $\partial_if=(\Sigma y)_i-b_i/y_i=0$ gives $y^\ast_i(\Sigma y^\ast)_i=b_i$.
+Since $w_i(\Sigma w)_i$ is homogeneous of degree 2, the relative contributions of $w^\ast$
+equal $b_i/\sum_jb_j=b_i$.
+\emph{Uniqueness of the portfolio.} If $w$ qualifies, $y=w/\sqrt{w\T\Sigma w}$ satisfies
+$y_i(\Sigma y)_i=b_i$, so $\nabla f(y)=0$, so $y=y^\ast$.
 \end{proof}
 
-\subsubsection*{Algorithm: cyclical coordinate descent}
+\begin{proposition}[coordinate update]\label{prop:ccd}
+With $(y_j)_{j\ne i}$ fixed, the minimizer of $f$ in $y_i>0$ is
+\[
+y_i=\frac{-c_i+\sqrt{c_i^2+4\Sigma_{ii}b_i}}{2\Sigma_{ii}},\qquad c_i=\sum_{j\ne i}\Sigma_{ij}y_j .
+\]
+\end{proposition}
 
-We minimize $f$ in $y_i$ alone, the other coordinates held fixed \citep{griveau2013}.
-The first-order condition in $y_i$ reads
-\[
-\Sigma_{ii}\,y_i^2+c_i\,y_i-b_i=0,\qquad c_i=\sum_{j\ne i}\Sigma_{ij}\,y_j .
-\]
-The discriminant $c_i^2+4\Sigma_{ii}b_i$ is positive and the product of the roots
-$-b_i/\Sigma_{ii}$ is negative: there is \textbf{exactly one positive root}, which gives
-the closed-form update
-\[
-y_i\leftarrow\frac{-c_i+\sqrt{c_i^2+4\,\Sigma_{ii}\,b_i}}{2\,\Sigma_{ii}} .
-\]
-Coordinate descent with exact minimization converges to the global optimum for a
-strictly convex function made of a smooth term plus a separable term \citep{tseng2001}.
+\begin{proof}
+$\partial_if=0$ reads $\Sigma_{ii}y_i^2+c_iy_i-b_i=0$. The product of the roots,
+$-b_i/\Sigma_{ii}$, is negative: exactly one root is positive, and it is this one.
+\end{proof}
+
+Repeating this update over $i=1,\dots,N$ until it stabilizes (cyclical coordinate
+descent) converges to $y^\ast$ \admitted{\citealp{tseng2001}}.
 
 \begin{algorithm}[H]
-\caption{Risk budgeting by coordinate descent (\py{RiskParity._ccd})}\label{alg:ccd}
+\caption{Risk budgeting by coordinate descent (\py{RiskParity})}\label{alg:ccd}
 \KwIn{$\Sigma\succ0$, budgets $b$, tolerance $\varepsilon=10^{-10}$}
 \KwOut{weights $w$}
-$y_i\gets b_i/\sigma_i$ for all $i$; \quad $y\gets y/\sqrt{y\T\Sigma y}$\;
-$s\gets\Sigma y$ \Com*[r]{kept up to date, never recomputed}
-\Repeat{$\lVert y-y^{\mathrm{old}}\rVert\le\varepsilon\,\lVert y\rVert$}{
+$y_i\gets b_i/\sigma_i$; \quad $y\gets y/\sqrt{y\T\Sigma y}$; \quad $s\gets\Sigma y$\;
+\Repeat{$\lVert y-y^{\mathrm{old}}\rVert\le\varepsilon\lVert y\rVert$}{
   $y^{\mathrm{old}}\gets y$\;
   \For{$i\gets1$ \KwTo $N$}{
-    $c\gets s_i-\Sigma_{ii}y_i$\;
-    $y_i'\gets\bigl(-c+\sqrt{c^2+4\Sigma_{ii}b_i}\bigr)/(2\Sigma_{ii})$\;
-    $s\gets s+\Sigma_{:,i}\,(y_i'-y_i)$; \quad $y_i\gets y_i'$ \Com*[r]{$O(N)$}
+    $c\gets s_i-\Sigma_{ii}y_i$; \quad $y_i'\gets\bigl(-c+\sqrt{c^2+4\Sigma_{ii}b_i}\bigr)/(2\Sigma_{ii})$\;
+    $s\gets s+\Sigma_{:,i}(y_i'-y_i)$; \quad $y_i\gets y_i'$ \Com*[r]{$O(N)$ cost, no inversion}
   }
 }
 \KwRet{$w=y/\one\T y$}
 \end{algorithm}
 
-The vector $\Sigma y$ is updated incrementally: $O(N)$ per coordinate, $O(N^2)$ per
-sweep, and \textbf{no matrix inversion}. The initialization $y\propto b_i/\sigma_i$,
-rescaled to $y\T\Sigma y=1$, starts close to the solution; in practice 10 to 50 sweeps
-are enough.
-
-\textbf{Using budgets.} Express a view in risk rather than in capital. In the example,
-the \enquote{RB bond tilt} strategy doubles the budget of TLT, IEF and LQD: the three
-carry 45\pct{} of the risk (15\pct{} each) versus 30\pct{} under ERC.
-
-\begin{tip}
-\begin{itemize}
-\item Budgets must be strictly positive (log barrier). To exclude an asset, remove it
-from the universe.
-\item Without the long-only constraint, the system $y_i(\Sigma y)_i=b_i$ has one solution
-per orthant, i.e.\ up to $2^{N-1}$ distinct portfolios \citep{bai2016}. The long-only
-solution is the only one you want in practice.
-\item To target a volatility (say 10\pct), scale $w$ by $0.10/\sigma_p$: relative
-contributions are invariant to leverage.
-\end{itemize}
-\end{tip}
-
 \begin{code}
-\py{RiskParity(budgets={...})}, method \py{_ccd}, attribute \py{n_iter_} (number of sweeps).
+\py{RiskParity(budgets={"SPY": 1, "TLT": 2, ...})}, one strictly positive budget per
+asset (normalized automatically); \py{n_iter_} gives the number of sweeps.
 \end{code}
 
 % -----------------------------------------------------------------------------
 \subsection{Equal Risk Contribution (ERC)}\label{sec:erc}
 
-ERC is risk budgeting with $b_i=1/N$: every asset carries the same share of risk.
+\begin{definition}
+ERC is risk budgeting with $b_i=1/N$: every asset carries the same share of the risk.
+\end{definition}
 
 \begin{theorem}[\citealp{maillard2010}]\label{thm:erc}
-Let $\sMV$ be the volatility of the long-only minimum variance portfolio. Then
-\[
-\sMV\le\sERC\le\sEW .
-\]
+If $\sMV$ is the volatility of the long-only minimum variance portfolio, then
+$\sMV\le\sERC\le\sEW$.
 \end{theorem}
 
 \begin{proof}
-The first inequality is immediate: the long-only minimum variance portfolio minimizes
-$\sigma_p$ over the whole simplex, which contains $w_{\mathrm{ERC}}$.
-
-For the second, $\sigma_p(w)=\lVert\Sigma^{1/2}w\rVert$ is convex, hence lies above its
-tangent at $w_{\mathrm{ERC}}$:
+The first inequality holds because minimum variance minimizes $\sigma_p$ over the whole
+of $\simplex$. For the second, $\sigma_p$ is convex (a norm of $\Sigma^{1/2}w$), hence
+lies above its tangent at $w=w_{\mathrm{ERC}}$. With $\nabla\sigma_p(w)\T w=\sigma_p(w)$
+(proposition~\ref{prop:euler}):
 \[
-\sigma_p\bigl(\tfrac{\one}{N}\bigr)\ \ge\ \sERC+\nabla\sigma_p(w_{\mathrm{ERC}})\T\Bigl(\tfrac{\one}{N}-w_{\mathrm{ERC}}\Bigr)
-=\frac1N\sum_i\partial_i\sigma_p(w_{\mathrm{ERC}}),
+\sEW\ \ge\ \sERC+\nabla\sigma_p(w)\T\bigl(\tfrac{\one}{N}-w\bigr)=\frac1N\sum_i\partial_i\sigma_p(w).
 \]
-since $\nabla\sigma_p(w)\T w=\sigma_p(w)$ (proposition~\ref{prop:euler}). At ERC,
-$w_i\,\partial_i\sigma_p=\sERC/N$, so $\partial_i\sigma_p=\sERC/(Nw_i)$ and
-\[
-\sEW\ \ge\ \frac{\sERC}{N^2}\sum_i\frac1{w_i}\ \ge\ \sERC,
-\]
-by the arithmetic-harmonic mean inequality: $\sum_i1/w_i\ge N^2/\sum_iw_i=N^2$.
+At ERC, $w_i\,\partial_i\sigma_p=\sERC/N$, hence
+$\sEW\ge\frac{\sERC}{N^2}\sum_i\frac1{w_i}\ge\sERC$, since $\sum_i1/w_i\ge N^2$ on
+$\simplex$ (arithmetic-harmonic mean inequality).
 \end{proof}
 
-\textbf{Interpretation.} In the parametrization of theorem~\ref{thm:spinu}, $y^\ast$ also
-minimizes $\sqrt{y\T\Sigma y}$ subject to $\sum_i\ln y_i\ge c$ (the value of $c$ only
-changes the scale of $y^\ast$). ERC is therefore a minimum variance portfolio under a
-logarithmic \textbf{diversification constraint}: without the constraint we recover
-minimum variance; the constraint prevents any weight from going to zero.
-
-\fig{erc_two_assets.png}{Two assets, $\sigma_1=18\pct$, $\sigma_2=6\pct$, $\rho=-0.2$.
-Minimum variance (5.3\pct) puts 14\pct{} of the risk on the risky asset, 1/N (8.9\pct)
-puts 95\pct, ERC (5.7\pct) exactly 50\pct. ERC's volatility is barely above the minimum:
-a lot of diversification is bought for very little variance.}
-
-\begin{proposition}\label{prop:erctangent}
-If all assets have the same Sharpe ratio and correlations are homogeneous, ERC is the
-tangency (maximum Sharpe) portfolio.
+\begin{proposition}\label{prop:tangent}
+If all assets have the same Sharpe ratio and equal correlations, ERC is the maximum
+Sharpe portfolio.
 \end{proposition}
 
 \begin{proof}
-The tangency portfolio is $w\propto\Sigma^{-1}\mu$. With $\mu_i=s\,\sigma_i$ and
-$\Sigma=DCD$, $D=\diag(\sigma_i)$, $C=(1-\rho)I+\rho\one\one\T$:
-$\Sigma^{-1}\mu=s\,D^{-1}C^{-1}\one$. Since $C\one=(1+(N-1)\rho)\one$,
-$C^{-1}\one=\one/(1+(N-1)\rho)$ and $w\propto D^{-1}\one=(1/\sigma_i)_i$, which is ERC
-by proposition~\ref{prop:invvol}.
+The maximum Sharpe portfolio is $w\propto\Sigma^{-1}\mu$. With $\mu_i=s\sigma_i$,
+$\Sigma=DCD$, $D=\diag(\sigma_i)$ and $C=(1-\rho)I+\rho\one\one\T$: since
+$C\one=(1+(N-1)\rho)\one$, we get $\Sigma^{-1}\mu=sD^{-1}C^{-1}\one\propto D^{-1}\one$. This
+is inverse volatility, equal to ERC by proposition~\ref{prop:invvol}.
 \end{proof}
 
-\textbf{Why ERC works out of sample.} It does not use expected returns, the most poorly
-estimated quantity. It does not invert $\Sigma$: weights depend continuously and stably
-on $\Sigma$, whereas minimum variance amplifies the noise in small eigenvalues. And
-proposition~\ref{prop:erctangent} makes it optimal under a reasonable ``ignorance''
-assumption.
-
-\begin{tip}
-\begin{itemize}
-\item ERC overweights low-volatility assets (bonds). Its historical performance owes a
-lot to the 1981--2020 bond bull market. In 2022, stocks and bonds fell together and
-levered risk parity funds lost around 20\pct{} or more.
-\item An unlevered ERC has low volatility (8\pct{} in the example). Compare it with 1/N
-on Sharpe ratio, or at equal volatility.
-\end{itemize}
-\end{tip}
+\fig[0.95\linewidth]{erc_two_assets.png}{Two assets ($\sigma_1=18\pct$, $\sigma_2=6\pct$,
+$\rho=-0.2$). ERC has a volatility close to the minimum (5.7\pct{} versus 5.3\pct) but
+splits risk equally, whereas 1/N puts 95\pct{} of it on the risky asset.}
 
 \begin{code}
-\py{ERC(cov_method=...)}
+\py{ERC(cov_method="ledoit_wolf")}
 \end{code}
 
 % -----------------------------------------------------------------------------
 \subsection{Hierarchical Risk Parity (HRP)}\label{sec:hrp}
 
-\textbf{Intuition} \citep{lopezdeprado2016}. Markowitz treats every asset as a potential
-substitute for every other (complete graph). But assets have a hierarchical structure:
-SPY and IWM are close, so are TLT and IEF, and these two families are far apart. HRP
-allocates between families first, then within them.
+HRP \citep{lopezdeprado2016} groups assets that look alike, then splits capital between
+groups before splitting it within each group. It never inverts $\Sigma$.
 
-\subsubsection*{Step 1: distance}
-
-\[
-d_{ij}=\sqrt{\tfrac12(1-\rho_{ij})}\in[0,1].
-\]
+\begin{definition}[correlation distance]
+$d_{ij}=\sqrt{\tfrac12(1-\rho_{ij})}\in[0,1]$.
+\end{definition}
 
 \begin{proposition}
-$d$ is a metric.
+$d$ is a metric, equal to zero if and only if $\rho_{ij}=1$.
 \end{proposition}
 
 \begin{proof}
 Let $z_i$ be the series of asset $i$, demeaned and scaled to unit norm. Then
-$\rho_{ij}=z_i\T z_j$ and $\lVert z_i-z_j\rVert^2=2(1-\rho_{ij})$, so
-$d_{ij}=\tfrac12\lVert z_i-z_j\rVert$. Non-negativity, symmetry and the triangle
-inequality are inherited from the Euclidean norm; $d_{ij}=0$ if and only if
-$\rho_{ij}=1$.
+$\rho_{ij}=z_i\T z_j$ and $\lVert z_i-z_j\rVert^2=2-2\rho_{ij}$, so
+$d_{ij}=\frac12\lVert z_i-z_j\rVert$ inherits the properties of the Euclidean norm.
 \end{proof}
 
-\subsubsection*{Step 2: hierarchical clustering}
-
-Repeatedly merge the two closest clusters. The distance between clusters depends on the
-\py{linkage}: \py{single} (minimum distance, original paper, prone to chaining),
-\py{complete} (maximum, compact clusters), \py{average} (mean, a good compromise),
-\py{ward} (minimizes the increase in within-cluster variance).
-
-\subsubsection*{Step 3: quasi-diagonalization}
-
-Reorder the assets following the leaves of the dendrogram. Correlated assets become
-neighbours and the reordered covariance matrix concentrates its large entries near the
-diagonal.
-
-\fig{hrp_steps.png}{HRP steps. In the arbitrary order (left), the structure is invisible.
-After quasi-diagonalization (right), two blocks appear: rates and credit (LQD, TLT, IEF)
-at the top, risky assets (VNQ, EEM, EFA, SPY, IWM) at the bottom, with gold and
-commodities in between.}
-
-\subsubsection*{Step 4: recursive bisection}
-
-Start from $w=\one$. Each time a cluster is split into two sub-clusters $L$ and $R$:
+\begin{definition}[HRP]
+\begin{enumerate}
+\item \emph{Clustering}: hierarchical clustering of the assets according to $d$
+(\py{linkage} method), which produces a binary tree.
+\item \emph{Quasi-diagonalization}: the assets are ordered following the leaves of the
+tree, which places correlated assets next to each other.
+\item \emph{Bisection}: start from $w=\one$ and recursively split each group into two
+sub-groups $L$ and $R$ (two halves of the ordered list, or the two branches of the
+tree). At each split,
 \[
-V_c=\tilde w_c\T\Sigma_c\tilde w_c,\quad
-\tilde w_c=\frac{\diag(\Sigma_c)^{-1}}{\one\T\diag(\Sigma_c)^{-1}},\qquad
-\alpha=1-\frac{V_L}{V_L+V_R},\quad w_L\leftarrow\alpha\,w_L,\quad w_R\leftarrow(1-\alpha)\,w_R .
+\alpha=\frac{V_R}{V_L+V_R},\qquad w_L\leftarrow\alpha\,w_L,\qquad w_R\leftarrow(1-\alpha)\,w_R,
 \]
-$V_c$ is the variance of the inverse variance portfolio of cluster $c$: each
-sub-cluster receives a share inversely proportional to its variance. It is an inverse
-variance allocation between two super-assets.
+where $V_c=\tilde w_c\T\Sigma_c\tilde w_c$ is the variance of the inverse variance
+portfolio of group $c$, with $\tilde w_c\propto\diag(\Sigma_c)^{-1}$.
+\end{enumerate}
+\end{definition}
 
-\begin{algorithm}[H]
-\caption{Hierarchical Risk Parity (\py{HRP})}\label{alg:hrp}
-\KwIn{in-sample returns, \py{linkage}, \py{split}}
-\KwOut{weights $w$}
-$\Sigma\gets$ estimated covariance; \quad $\rho\gets$ correlation\;
-$d_{ij}\gets\sqrt{(1-\rho_{ij})/2}$\;
-tree $\gets$ hierarchical clustering of $d$ (condensed form)\;
-order $\gets$ leaves of the tree \Com*[r]{quasi-diagonalization}
-$w\gets\one$; \quad stack $\gets$ [order]\;
-\While{stack not empty}{
-  pop a cluster $c$ from the stack\;
-  \lIf{$|c|=1$}{continue}
-  $(L,R)\gets$ \eIf{\py{split="bisection"}}{two halves of the list $c$}{two children of node $c$}
-  $\alpha\gets1-V_L/(V_L+V_R)$\;
-  $w_L\gets\alpha\,w_L$; \quad $w_R\gets(1-\alpha)\,w_R$\;
-  push $L$ and $R$ onto the stack\;
-}
-\KwRet{$w$}
-\end{algorithm}
+Each sub-group receives a share inversely proportional to its variance. The
+$\tilde w_c$ are only used to compute $V_c$: the final weights come from the successive
+splits, down to individual assets.
 
-\begin{proposition}
-(i) No matrix inversion is needed: HRP works even if $\Sigma$ is singular ($T<N$).
-(ii) If $N=2$ or if $\Sigma$ is diagonal, HRP is the inverse variance portfolio.
+\fig{hrp_steps.png}{HRP steps on the simulated universe: correlations in an arbitrary
+order, tree, reordered correlations. Two blocks appear: rates and credit at the top,
+risky assets at the bottom.}
+
+\begin{proposition}\label{prop:hrp}
+\begin{enumerate}[label=(\roman*)]
+\item HRP returns a portfolio in $\simplex$ and only inverts diagonals: it works even if
+$\Sigma$ is singular.
+\item If $\Sigma$ is diagonal, HRP is the inverse variance portfolio.
+\end{enumerate}
 \end{proposition}
 
 \begin{proof}
-(i) Only the diagonals of sub-blocks are inverted. (ii) For a diagonal $\Sigma$,
-$V_c=1/S_c$ with $S_c=\sum_{i\in c}\sigma_i^{-2}$, so $\alpha=V_R/(V_L+V_R)=S_L/(S_L+S_R)$:
-cluster $L$ receives the inverse variance share of its assets. By induction on the
-tree, each asset receives $\sigma_i^{-2}/\sum_j\sigma_j^{-2}$. The case $N=2$ is a single
-split between two singletons, with $V_c=\sigma_c^2$.
+(i) Before a group $c$ is split, all its assets carry the same weight $m_c$ (they have
+gone through the same multiplications), with $m=1$ for the whole universe. A split gives
+$m_L=\alpha m_c$ and $m_R=(1-\alpha)m_c$ with $\alpha\in(0,1)$ since $V_L,V_R>0$. By
+induction on the tree, the sum of the final weights of the assets of $c$ equals $m_c$:
+this is immediate for a single asset, and otherwise it equals $m_L+m_R=m_c$. For the
+whole universe the sum is 1, and all weights are positive.
+(ii) For a diagonal $\Sigma$, $V_c=1/S_c$ with $S_c=\sum_{i\in c}\sigma_i^{-2}$, so
+$\alpha=S_L/(S_L+S_R)$: each group receives the inverse variance share of its assets,
+and by induction asset $i$ receives $\sigma_i^{-2}/\sum_j\sigma_j^{-2}$.
 \end{proof}
 
-\textbf{Two splitting variants} (\py{split=}). \py{"bisection"} (original paper) cuts the
-\emph{ordered list} into two equal halves, ignoring the tree: a natural cluster of 3
-assets in a universe of 10 can be cut in two. \py{"dendrogram"} follows the actual nodes
-of the dendrogram; it is the recommended variant.
-
-\begin{tip}
-\begin{itemize}
-\item López de Prado's original code passes the \emph{square} matrix $d$ to
-\py{scipy.cluster.hierarchy.linkage}. SciPy then treats each row as an observation and
-computes $\tilde d_{ij}=\lVert d_{\cdot,i}-d_{\cdot,j}\rVert_2$, a distance of distances.
-Many implementations reproduce this behaviour without knowing it. \py{portopt} passes the
-condensed form (\py{squareform}), hence $d$ itself.
-\item HRP is unstable over time: a small change in correlation can reorganize the tree
-and move a lot of weight. In the example its turnover (120\pct{} a year) is 2.5 times
-that of ERC; at 20~bps of costs, that is 24~bps of performance a year. Try
-\py{linkage="ward"} or \py{"average"}.
-\item HRP concentrates risk in the least volatile cluster (71\pct{} of the risk on TLT,
-IEF and LQD in the example). It is a defensive portfolio more than a risk-diversified
-one.
-\end{itemize}
-\end{tip}
-
 \begin{code}
-\py{HRP(linkage="single", split="bisection")}; attributes \py{order_}
-(quasi-diagonal order) and \py{linkage_matrix_} (to pass to
-\py{scipy.cluster.hierarchy.dendrogram}).
+\py{HRP(linkage="single", split="bisection")} reproduces the original paper;
+\py{split="dendrogram"} follows the branches of the tree instead of cutting the list into
+two halves. Attributes: \py{order_} (leaf order), \py{linkage_matrix_} (tree).
 \end{code}
+
+\begin{practice}
+The tree can change from one rebalancing to the next: HRP is less stable than ERC
+(turnover 2.5 times higher in the example). The \py{"average"} and \py{"ward"} methods
+give more stable trees than \py{"single"}.
+\end{practice}
 
 % -----------------------------------------------------------------------------
 \subsection{Summary}
@@ -841,393 +776,321 @@ one.
 \begin{center}\small
 \begin{tabularx}{\linewidth}{@{}l>{\raggedright}X>{\raggedright}X>{\raggedright}X>{\raggedright\arraybackslash}X@{}}
 \toprule
-& 1/N & InvVol & Risk budgeting / ERC & HRP \\
+& 1/N & InvVol & Risk budgeting, ERC & HRP \\
 \midrule
-Uses $\mu$ & no & no & no & no \\
 Uses $\sigma_i$ & no & yes & yes & yes \\
-Uses $\rho_{ij}$ & no & no & yes & yes (structure) \\
+Uses $\rho_{ij}$ & no & no & yes & yes, through the tree \\
 Inverts $\Sigma$ & no & no & no & no \\
-Solution & direct & direct & iterative, unique & direct, tree-dependent \\
-Complexity & $O(N)$ & $O(N)$ & $O(N^2)$ per sweep & $O(N^2)$ \\
-Equalizes & capital & $w_i\sigma_i$ & $w_i(\Sigma w)_i$ & variance across clusters \\
-Weight stability & perfect & very good & good & average \\
-Weak spot & risk concentration & ignores correlations & needs leverage & turnover, linkage sensitivity \\
+Computation & direct & direct & iterative, unique solution & direct \\
+What is equalized & capital & $w_i\sigma_i$ & $w_i(\Sigma w)_i$ & variance across groups \\
+Results & prop.~\ref{prop:ew} & prop.~\ref{prop:invvol} & th.~\ref{thm:spinu}, \ref{thm:erc} & prop.~\ref{prop:hrp} \\
 \bottomrule
 \end{tabularx}
-\captionof{table}{Comparison of allocation methods.}\label{tab:compare}
 \end{center}
 
 % =============================================================================
 \section{Walk-forward backtest}\label{sec:backtest}
 
-\fig{walk_forward.png}{Rolling-window walk-forward backtest. Weights estimated on returns
-up to $t-1$ are held over $[t,t+H)$, then the window moves forward by $H$.}
+\begin{definition}[walk-forward backtest]
+Given a rule $\mathcal A$, a window $L$ and a holding period $H$, the rebalancing dates
+are $t_k=L+kH$. At each $t_k$ we compute $w^{(k)}=\mathcal A(R_{t_k-L},\dots,R_{t_k-1})$
+(rolling window) or $\mathcal A(R_0,\dots,R_{t_k-1})$ (expanding window), then hold this
+portfolio until $t_{k+1}-1$.
+\end{definition}
 
-\subsection{Mechanics}
+\fig[0.95\linewidth]{walk_forward.png}{Estimation over $[t-L,t)$, holding over $[t,t+H)$,
+then a shift by $H$.}
+
+\begin{proposition}[no look-ahead]
+The portfolio that earns the return $R_t$ only depends on $R_0,\dots,R_{t-1}$.
+\end{proposition}
+
+\begin{proof}
+If $t_k\le t<t_{k+1}$, $R_t$ is earned with $w^{(k)}$ drifted up to $t-1$ (definition
+below). $w^{(k)}$ only depends on returns before $t_k\le t$, and the drift only on
+$R_{t_k},\dots,R_{t-1}$.
+\end{proof}
+
+\begin{definition}[weight drift]
+Between two rebalancings, the quantities held do not change. $k$ days after the
+rebalancing ($V_0=1$):
+\[
+V_k=\sum_iw_i\prod_{s=1}^k(1+R_{i,s}),\qquad R_{p,k}=\frac{V_k}{V_{k-1}}-1 .
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:drift}
+The weight of asset $i$ after $k$ days is $w_i^{(k)}=w_i\prod_{s\le k}(1+R_{i,s})/V_k$,
+and $R_{p,k}=\sum_iw_i^{(k-1)}R_{i,k}$.
+\end{proposition}
+
+\begin{proof}
+Position $i$ is worth $w_i\prod_{s\le k}(1+R_{i,s})$ and its weight is this value divided
+by $V_k$. Then
+$\frac{V_k}{V_{k-1}}=\sum_i\frac{w_i\prod_{s<k}(1+R_{i,s})}{V_{k-1}}(1+R_{i,k})=\sum_iw_i^{(k-1)}(1+R_{i,k})$:
+this is proposition~\ref{prop:simple} applied to the drifted weights.
+\end{proof}
+
+\begin{definition}[turnover and costs]
+At rebalancing, turnover is $\tau=\sum_i|w_i^{\mathrm{target}}-w_i^{\mathrm{drifted}}|$,
+measured against the \emph{drifted} weights and not against the previous target. With a
+proportional cost $c$, wealth is multiplied by $1-c\,\tau$. Annualized turnover is the
+sum of the $\tau$, excluding the initial build-up, divided by the number of years.
+\end{definition}
+
+The annual cost is therefore about $c$ times the annualized turnover: 120\pct{} turnover
+at 10~bps costs 12~bps a year.
 
 \begin{algorithm}[H]
 \caption{Walk-forward backtest (\py{Backtester.run})}\label{alg:bt}
-\KwIn{returns $R_{0..T-1}$, estimator, $L$, $H$, cost $c$}
+\KwIn{returns $R$, rule $\mathcal A$, $L$, $H$, cost $c$}
 \KwOut{out-of-sample returns net of costs}
-$w^{\mathrm{drift}}\gets0$ \Com*[r]{start in cash}
-$t\gets L$\;
+$w^{\mathrm{drifted}}\gets0$; \quad $t\gets L$ \Com*[r]{start in cash}
 \While{$t<T$}{
-  window $\gets R_{t-L..t-1}$ (\py{rolling}) or $R_{0..t-1}$ (\py{expanding})\;
-  universe $\gets$ assets with no NaN over the window\;
-  $w\gets$ copy of the estimator fitted on the window\;
-  $\tau\gets\sum_i|w_i-w_i^{\mathrm{drift}}|$\;
-  hold $w$ over $R_{t..t+H-1}$ with weight drift; wealth $\times(1-c\,\tau)$ at $t$\;
-  $w^{\mathrm{drift}}\gets$ drifted weights at period end; \quad $t\gets t+H$\;
+  eligible assets $\gets$ assets with no missing value over the window\;
+  $w\gets\mathcal A(\text{window})$; \quad $\tau\gets\sum_i|w_i-w_i^{\mathrm{drifted}}|$\;
+  hold $w$ over $[t,t+H)$ with drift; wealth $\times(1-c\tau)$ at $t$\;
+  $w^{\mathrm{drifted}}\gets$ weights at period end; \quad $t\gets t+H$\;
 }
 \end{algorithm}
 
-Weights use information up to $t-1$ and earn $R_t$: no look-ahead bias. A unit test
-checks this with a spy estimator that records the last date it sees. The estimator is
-copied at every date: no state leaks from one window to the next.
-
-\subsection{Weight drift}
-
-Between two rebalancings, a real portfolio does not keep constant weights: they drift
-with prices. For $k=1,\dots,H$,
-\[
-V_k=\sum_iw_i\prod_{s=1}^k(1+R_{i,s}),\qquad
-R_{p,k}=\frac{V_k}{V_{k-1}}-1,\qquad
-w_i^{\mathrm{drift}}=\frac{w_i\prod_{s=1}^H(1+R_{i,s})}{V_H}.
-\]
-The implementation is vectorized: \py{np.cumprod(1 + R, axis=0) @ w} gives the whole
-path $V_1,\dots,V_H$ at once. With \py{drift=False}, the portfolio is assumed to be
-rebalanced to target every day, for free: more optimistic than reality.
-
-\subsection{Transaction costs}
-
-At each rebalancing, one-way turnover is measured against the \textbf{drifted weights}:
-\[
-\tau_t=\sum_i\bigl|w_i^{\mathrm{target}}-w_i^{\mathrm{drift}}\bigr| .
-\]
-Measuring against the previous target is a common mistake: if equities rose 10\pct{}
-during the month, an ERC portfolio must sell some even if its target did not move.
-Ignoring drift understates turnover.
-
-Wealth is multiplied by $(1-c\,\tau_t)$ at rebalancing, with the cost $c$ given in
-basis points through \py{transaction_cost_bps}. The first rebalancing starts from cash ($\tau=1$).
-Annualized turnover, excluding the initial build-up, is
-\[
-\mathrm{Turnover}_{\mathrm{ann}}=\frac{\sum_{t>t_0}\tau_t}{\text{number of years}},
-\]
-and the annual cost is about $c\times\mathrm{Turnover}_{\mathrm{ann}}$: 120\pct{}
-turnover at 10~bps costs 12~bps a year.
-
-\begin{tip}
-\begin{itemize}
-\item \textbf{$(L,H)$ is a hyperparameter.} Test a grid and look at the stability of the
-ranking of methods, never at the best pair: otherwise you are overfitting the backtest.
-\item \textbf{Timing luck.} Shifting the first rebalancing date by $0$ to $H-1$ days gives
-$H$ different paths for the same strategy. Their dispersion measures how much of the
-result is luck; for a monthly strategy it is often of the same order as the gaps
-between methods.
-\item \py{window="expanding"} reduces estimation noise but reacts slowly to regimes. A
-rolling window of 252 to 756 days is the standard.
-\end{itemize}
-\end{tip}
-
 \begin{code}
-\py{Backtester(returns, estimator, in_sample, out_of_sample, window, transaction_cost_bps, drift)};
-\py{.run()} returns the net out-of-sample returns; attributes \py{weights_},
-\py{turnover_}, \py{gross_returns_}; methods \py{annualized_turnover()} and
-\py{risk_contributions()}. \py{run_backtests(returns, {name: est}, ...)} compares
-several estimators on the same grid.
+\py{bt = Backtester(R, ERC(), in_sample=252, out_of_sample=21, transaction_cost_bps=5)};
+\py{bt.run()} returns the net returns. Attributes \py{weights_}, \py{turnover_},
+\py{gross_returns_}; methods \py{annualized_turnover()} and \py{risk_contributions()}.
+Options: \py{window="expanding"}, \py{drift=False} (free daily rebalancing to target).
+\py{run_backtests} compares several rules on the same grid.
 \end{code}
 
 % =============================================================================
 \section{Performance metrics}\label{sec:perf}
 
-Every metric takes a \py{pd.Series} (one strategy) or a \py{pd.DataFrame} (one column
-per strategy) of periodic simple returns. \py{summary()} produces the full table.
+The functions of \py{portopt.metric} take a series of simple returns (\py{pd.Series}) or
+a table with one column per strategy (\py{pd.DataFrame}).
 
-\subsection{Total return and CAGR}
+\begin{definition}[total return, CAGR]
+$\mathrm{TR}=\prod_{t=1}^T(1+R_t)-1$ and $\CAGR=(1+\mathrm{TR})^{P/T}-1$: the constant
+annual rate leading to the same final wealth.
+\end{definition}
 
-\[
-\mathrm{TR}=\prod_{t=1}^T(1+R_t)-1,\qquad\CAGR=(1+\mathrm{TR})^{P/T}-1 .
-\]
-The CAGR is the constant rate that yields the same final wealth: it is the return the
-investor actually experiences. The annualized arithmetic mean is
-$\mu_{\mathrm{ann}}=P\,\bar R$.
-
-\subsection{Volatility drag}
-
-\begin{proposition}
-The log growth rate $g=\ln(1+\CAGR)$ satisfies, to second order,
-\[
-g\approx\mu_{\mathrm{ann}}-\frac{\sigma_{\mathrm{ann}}^2}{2}.
-\]
+\begin{proposition}[volatility drag]\label{prop:drag}
+The growth rate $g=\ln(1+\CAGR)$ satisfies, to second order,
+$g\approx\mu_{\mathrm{ann}}-\frac12\sigma_{\mathrm{ann}}^2$.
 \end{proposition}
 
 \begin{proof}
-$g=\frac PT\sum_t\ln(1+R_t)$. With $\ln(1+R)=R-R^2/2+O(R^3)$ and
+$g=\frac PT\sum_t\ln(1+R_t)$ and $\ln(1+R)=R-\frac{R^2}2+O(R^3)$. Since
 $\frac1T\sum_tR_t^2=\hat\sigma^2+\bar R^2\approx\hat\sigma^2$ for daily data,
-$g\approx P\bar R-P\hat\sigma^2/2=\mu_{\mathrm{ann}}-\sigma_{\mathrm{ann}}^2/2$.
+$g\approx P\bar R-\frac P2\hat\sigma^2=\mu_{\mathrm{ann}}-\frac12\sigma_{\mathrm{ann}}^2$.
 \end{proof}
 
-\begin{example}
-Two strategies with $\mu_{\mathrm{ann}}=8\pct$: at $\sigma=10\pct$, $g\approx7.5\pct$;
-at $\sigma=30\pct$, $g\approx3.5\pct$. In the example of section~\ref{sec:results}, 1/N
-has $\mu_{\mathrm{ann}}=7.36\pct$ and $\sigma_{\mathrm{ann}}=11.42\pct$: the formula
-predicts $g=7.36\pct-0.65\pct=6.71\pct$, the realized value is $\ln(1.0693)=6.70\pct$.
-\end{example}
+At equal mean, the less volatile strategy ends up richer. In the example, 1/N has
+$\mu_{\mathrm{ann}}=7.36\pct$ and $\sigma_{\mathrm{ann}}=11.42\pct$: the formula gives
+$g=6.71\pct$, versus $6.70\pct$ observed.
 
-\begin{tip}
-This is the strongest argument for variance reduction: at equal mean, lower volatility
-means higher final wealth. The multi-asset version is the \emph{rebalancing premium} or
-\emph{excess growth rate} \citep{fernholz1982,boothfama1992}: for a constant-weight
-portfolio, $g_p-\sum_iw_ig_i\approx\frac12\bigl(\sum_iw_i\sigma_i^2-\sigma_p^2\bigr)\ge0$.
-\end{tip}
+\begin{definition}[Sharpe ratio]
+With an annual risk-free rate $r_f$ converted per period,
+$\SR=\sqrt P\;\overline{(R-r_f)}\,/\,\hat\sigma$.
+\end{definition}
 
-\subsection{Sharpe ratio}
+\begin{proposition}\label{prop:srlev}
+The Sharpe ratio is invariant to leverage: multiplying excess returns by $k>0$ leaves it
+unchanged. Under the assumptions of proposition~\ref{prop:annual}, the annual Sharpe
+ratio is $\sqrt P$ times the per-period Sharpe ratio.
+\end{proposition}
 
-\[
-\SR=\sqrt P\,\frac{\overline{R-r_f}}{\hat\sigma},\qquad
-r_{f,\text{period}}=(1+r_{f,\text{ann}})^{1/P}-1 .
-\]
-Excess return per unit of total risk. It is \textbf{invariant to leverage}: levering
-twice doubles both the excess return and the volatility. A mean-variance investor
-picks the highest-Sharpe strategy and then sets the leverage.
+\begin{proof}
+The mean and standard deviation of $kX$ are $k$ times those of $X$. Annually, the ratio
+becomes $P\mu/(\sqrt P\sigma)=\sqrt P\,\mu/\sigma$.
+\end{proof}
 
-\textbf{Annualization.} The $\sqrt P$ factor is only valid for iid returns. For AR(1)
-returns with autocorrelation $\rho_1$ and a long horizon of $q$ periods \citep{lo2002},
-\[
-\SR_q\approx\SR_1\cdot\sqrt q\cdot\sqrt{\frac{1-\rho_1}{1+\rho_1}} .
-\]
-Smoothed returns ($\rho_1>0$: illiquid hedge funds, private equity) have an
-overstated $\sqrt P$-annualized Sharpe ratio.
-
-\subsection{Sortino ratio}
-
+\begin{definition}[Sortino ratio]
+For a per-period threshold $\tau$,
 \[
 \mathrm{Sortino}=\sqrt P\,\frac{\overline{R-\tau}}{DD_\tau},\qquad
-DD_\tau=\sqrt{\frac1T\sum_{t=1}^T\min(R_t-\tau,0)^2} .
+DD_\tau=\sqrt{\frac1T\sum_{t=1}^T\min(R_t-\tau,0)^2}.
 \]
-Only downside volatility is penalized. The sum in the denominator runs over \emph{all}
-observations (positive ones count as zero): dividing by the number of negative
-observations is a common mistake that inflates the downside deviation. For a symmetric
-distribution with a mean small relative to $\sigma$, $DD_0\approx\sigma/\sqrt2$, so
-$\mathrm{Sortino}\approx\sqrt2\,\SR$; a ratio well above 1.41 signals positive
-skewness.
+The mean of squares runs over \emph{all} dates, gains counting as zero. The Sortino
+ratio is the mean return per unit of downside risk.
+\end{definition}
 
-\subsection{Calmar ratio}
-
+\begin{proposition}\label{prop:sortino}
+\begin{enumerate}[label=(\roman*)]
+\item For $\tau=0$, the Sortino ratio is invariant to leverage.
+\item If $R\sim\mathcal N(\mu,\sigma^2)$, $\tau=0$ and $m=\mu/\sigma$:
 \[
-\mathrm{Calmar}=\frac{\CAGR}{|\MaxDD|} .
+\frac{\mathrm{Sortino}}{\SR}=\frac{1}{\sqrt{(1+m^2)\,\Phi(-m)-m\,\varphi(m)}}
+=\sqrt2\,\Bigl(1+\sqrt{2/\pi}\;m\Bigr)+O(m^2).
 \]
-The number of years of return needed to make up for the worst loss. It depends heavily
-on the length of the history (MaxDD can only get worse as $T$ grows): only compare
-strategies over the same period.
+\end{enumerate}
+\end{proposition}
 
-\subsection{Hit ratio}
+\begin{proof}
+(i) For $k>0$, $\min(kR,0)=k\min(R,0)$: numerator and denominator are multiplied by $k$.
+(ii) The ratio equals $\sigma/DD_0$. With $R=\sigma(m+Z)$ and $Z\sim\mathcal N(0,1)$,
+$DD_0^2=\sigma^2\E\bigl[(m+Z)^2\one_{Z<-m}\bigr]$. The identities
+$\E[Z\one_{Z<a}]=-\varphi(a)$ and $\E[Z^2\one_{Z<a}]=\Phi(a)-a\varphi(a)$, taken at $a=-m$,
+give $m^2\Phi(-m)-2m\varphi(m)+\Phi(-m)+m\varphi(m)$, hence the formula. For the
+expansion, $\Phi(-m)=\frac12-\varphi(0)m+O(m^2)$ and $\varphi(m)=\varphi(0)+O(m^2)$ with
+$\varphi(0)=1/\sqrt{2\pi}$, so the radicand equals $\frac12-2\varphi(0)m+O(m^2)$.
+\end{proof}
 
-\[
-\mathrm{Hit}=\frac1T\sum_t\mathbb 1\{R_t>0\} .
-\]
-Close to 50--55\pct{} for daily allocation strategies, and not very informative on its
-own: a 40\pct{} hit ratio with gains twice as large as losses is excellent (trend
-following), a 90\pct{} hit ratio can hide a short volatility position (frequent small
-gains, rare and huge losses).
+For a symmetric distribution, the Sortino ratio is therefore about $\sqrt2\approx1.41$
+times the Sharpe ratio when the mean is zero, a bit more when it is positive. In the
+example (daily Sharpe ratio of 0.04 to 0.055), a Gaussian would give 1.46 to 1.48; we
+observe 1.44 to 1.51. The Sortino ratio then adds almost nothing to the Sharpe ratio. It
+becomes informative for clearly asymmetric strategies.
+
+\begin{definition}[Calmar, hit ratio]
+$\mathrm{Calmar}=\CAGR/|\MaxDD|$ (MaxDD is defined in section~\ref{sec:risk}) and
+$\mathrm{Hit}=\frac1T\sum_t\one_{R_t>0}$.
+\end{definition}
 
 \begin{code}
-\py{portopt/metric.py}: \py{cagr}, \py{annualized_mean}, \py{annualized_volatility},
-\py{sharpe_ratio}, \py{sortino_ratio}, \py{calmar_ratio}, \py{hit_ratio}, \py{summary}.
+\py{cagr}, \py{annualized_mean}, \py{annualized_volatility},
+\py{sharpe_ratio(r, rf=0.0)} (annual $r_f$), \py{sortino_ratio(r, target=0.0)}
+(\emph{per-period} threshold), \py{calmar_ratio}, \py{hit_ratio}. \py{summary(rets)}
+gathers them in a table.
 \end{code}
 
 % =============================================================================
 \section{Risk metrics}\label{sec:risk}
 
-\subsection{Annualized volatility}
-
-$\sigma_{\mathrm{ann}}=\hat\sigma\sqrt P$. A symmetric measure: a 5\pct{} gain ``costs'' as
-much as a 5\pct{} loss. It is insufficient for skewed or fat-tailed distributions
-(section~\ref{sec:moments}).
-
-\fig{report_03_rolling_vol.png}{252-day rolling volatility. Realized volatility clusters
-in regimes: the simulated stress episodes double the volatility of every strategy, but
-the gap between strategies stays stable.}
-
-\subsection{Drawdown}
-
-\begin{definition}
-With wealth $W_t=\prod_{s\le t}(1+R_s)$ and $W_0=1$,
+\begin{definition}[drawdown]
+With wealth $W_t=\prod_{s\le t}(1+R_s)$ and $W_0=1$:
 \[
 DD_t=\frac{W_t}{\max\bigl(1,\max_{s\le t}W_s\bigr)}-1,\qquad\MaxDD=\min_tDD_t .
 \]
-The maximum time under water is the longest consecutive stretch with $DD_t<0$.
+The maximum time under water is the longest run of consecutive dates with $DD_t<0$.
 \end{definition}
 
-Initial capital counts as a peak: a strategy that loses 10\pct{} on day one has a
-drawdown of $-10\pct$, even if $W$ never went above $0.9$.
-
-\fig{drawdown_anatomy.png}{Anatomy of a drawdown: peak, trough, recovery and time under
-water (1/N portfolio, simulated data).}
-
-\textbf{Asymmetry of losses.} Recovering a loss $\ell$ requires a gain $\ell/(1-\ell)$:
-$-20\pct$ requires $+25\pct$, $-50\pct$ requires $+100\pct$.
-
-\begin{tip}
-For a Brownian motion with drift $\mu$ and volatility $\sigma$ \citep{magdonismail2004},
-$\mathbb E[\MaxDD]=\sqrt{\pi/2}\,\sigma\sqrt T$ if $\mu=0$, and
-$\mathbb E[\MaxDD]\sim\frac{\sigma^2}{2\mu}\ln T$ if $\mu>0$. MaxDD therefore depends
-mechanically on the length of the backtest: $-15\pct$ over 5 years is not comparable to
-$-15\pct$ over 20 years.
-\end{tip}
-
-\fig{report_02_drawdowns.png}{Drawdowns of the six strategies in the example; the dot
-marks the maximum drawdown.}
-
-\subsection{Historical VaR and CVaR}
-
-\begin{definition}
-With $q_\alpha(R)$ the empirical quantile of order $\alpha$ (5\pct{} by default),
-\[
-\VaR_\alpha=-q_\alpha(R),\qquad\CVaR_\alpha=-\mathbb E\bigl[R\mid R\le q_\alpha(R)\bigr],
-\]
-both expressed as a positive loss.
-\end{definition}
-
-The 95\pct{} VaR says: ``on 95\pct{} of days, we lose no more than this'', and says
-nothing about the other 5\pct. CVaR (expected shortfall) says: ``on the worst 5\pct{} of
-days, we lose this on average''.
-
-\fig{var_cvar.png}{Distribution of daily returns of the 1/N portfolio. The normal
-distribution with the same mean and standard deviation underestimates the left tail
-(shaded area).}
+Initial capital counts as a peak: losing 10\pct{} on the first day gives a drawdown of
+$-10\pct$.
 
 \begin{proposition}
-VaR is not subadditive; CVaR is a coherent risk measure \citep{artzner1999}: monotone,
-translation invariant, positively homogeneous and subadditive.
+After a loss $\ell\in(0,1)$, a gain of $\ell/(1-\ell)$ is needed to get back to the
+initial level.
 \end{proposition}
 
-\begin{example}[Counterexample to subadditivity]
-Two independent bonds, each with a 4\pct{} default probability (loss 100, otherwise 0).
-For each, $\VaR_{95\%}=0$ since default lies beyond the 5\pct{} quantile. For the
-portfolio of both, losses are 0, 100 and 200 with probabilities $92.16\pct$, $7.68\pct$
-and $0.16\pct$: $\VaR_{95\%}=100>0+0$. VaR penalizes diversification. On the CVaR side,
-each bond has $\CVaR_{95\%}=(4\pct\times100)/5\pct=80$, and the portfolio
-$(0.16\pct\times200+4.84\pct\times100)/5\pct=103.2\le160$: subadditivity holds.
-\end{example}
+\begin{proof}
+$(1-\ell)(1+g)=1\iff g=\ell/(1-\ell)$. So $-20\pct$ requires $+25\pct$, and $-50\pct$
+requires $+100\pct$.
+\end{proof}
 
-The FRTB framework (Basel III) replaced 99\pct{} VaR with 97.5\pct{} expected shortfall
-for market risk.
+\fig[0.95\linewidth]{drawdown_anatomy.png}{Peak, trough, recovery and time under water
+of the largest drawdown of the 1/N portfolio.}
 
-\begin{tip}
-Gaussian parametric VaR $-(\mu+z_\alpha\sigma)$ systematically underestimates tail risk.
-To stay parametric, use the Cornish-Fisher expansion, which corrects the quantile for
-skewness and kurtosis.
-\end{tip}
+MaxDD mechanically worsens with the length of the observation period: for a Brownian
+motion without drift, its expectation grows like $\sigma\sqrt T$
+\admitted{\citealp{magdonismail2004}}. MaxDD values are therefore only compared over the
+same period.
 
-\subsection{Skewness and kurtosis}\label{sec:moments}
+\begin{definition}[historical VaR and CVaR]
+With $q_\alpha$ the empirical quantile of order $\alpha$ of returns:
+$\VaR_\alpha=-q_\alpha$ and $\CVaR_\alpha=-\E[R\mid R\le q_\alpha]$, expressed as
+positive losses. CVaR is the average loss over the worst fraction $\alpha$ of dates.
+\end{definition}
 
-\[
-\gamma_3=\frac{\mathbb E[(R-\mu)^3]}{\sigma^3},\qquad
-\gamma_4=\frac{\mathbb E[(R-\mu)^4]}{\sigma^4},\qquad
-\text{excess kurtosis}=\gamma_4-3 .
-\]
-$\gamma_3<0$ signals a fat left tail (rare but large losses: carry, option selling,
-credit). $\gamma_4-3>0$ (leptokurtic) signals more quiet days and more extreme days than
-a Gaussian; at daily frequency, 5 to 20 is common for equity indices.
+\begin{proposition}\label{prop:var}
+\begin{enumerate}[label=(\roman*)]
+\item $\CVaR_\alpha\ge\VaR_\alpha$.
+\item VaR is not subadditive: one can have $\VaR(A+B)>\VaR(A)+\VaR(B)$.
+\item CVaR is subadditive; it is a coherent risk measure
+\admitted{\citealp{artzner1999}}.
+\end{enumerate}
+\end{proposition}
 
-\begin{tip}
-These higher moments are very poorly estimated: a single extreme day can flip skewness
-from $-1$ to $+1$. Look at them over subperiods before drawing any conclusion.
-\end{tip}
+\begin{proof}
+(i) On the event $\{R\le q_\alpha\}$, $-R\ge-q_\alpha$; take the conditional expectation.
+(ii) Two independent bonds each lose 100 with probability 4\pct{}, 0 otherwise. For
+each, $\VaR_{95\%}=0$. For their sum, the loss is 0, 100 or 200 with probabilities
+$92.16\pct$, $7.68\pct$ and $0.16\pct$: $\VaR_{95\%}=100>0+0$.
+\end{proof}
 
-\subsection{Turnover}
+In this example, $\CVaR_{95\%}=80$ for each bond and $103.2\le160$ for the sum: CVaR does
+reward diversification.
 
-Defined in section~\ref{sec:backtest}. It is an implementation risk metric: high
-turnover means exposure to costs, market impact and limited capacity.
+\fig[0.95\linewidth]{var_cvar.png}{Daily returns of 1/N, 95\pct{} VaR and CVaR. The
+normal distribution with the same mean and variance underestimates the left tail.}
+
+\begin{definition}[skewness and kurtosis]
+$\gamma_3=\E[(R-\mu)^3]/\sigma^3$ and $\gamma_4=\E[(R-\mu)^4]/\sigma^4$; the excess
+kurtosis $\gamma_4-3$ is zero for a normal distribution.
+\end{definition}
+
+$\gamma_3<0$ signals rare but large losses, $\gamma_4-3>0$ tails fatter than a normal
+distribution. These moments depend on a few extreme days: check them over subperiods.
 
 \begin{code}
-\py{max_drawdown}, \py{max_drawdown_duration}, \py{drawdown_series},
-\py{value_at_risk}, \py{conditional_value_at_risk}, \py{skewness},
+\py{drawdown_series}, \py{max_drawdown}, \py{max_drawdown_duration},
+\py{value_at_risk(r, alpha=0.05)}, \py{conditional_value_at_risk}, \py{skewness},
 \py{excess_kurtosis}.
 \end{code}
 
 % =============================================================================
 \section{Statistical significance}\label{sec:stats}
 
-A backtest is one realization of a random process. Before concluding that one strategy
-beats another, check that the gap can be told apart from noise.
+A backtest is a single path: a performance gap only matters if it exceeds the
+estimation noise.
 
-\subsection{Standard error of the Sharpe ratio}
+\begin{proposition}[standard error of the Sharpe ratio]\label{prop:sese}
+For independent normal returns with per-period Sharpe ratio $\SR$, the Sharpe ratio
+estimated over $T$ periods satisfies $\Var(\SRh)\approx(1+\frac12\SR^2)/T$. Annually,
+over $Y$ years, $\se(\SRh_{\mathrm{ann}})\approx\sqrt{(1+\frac12\SR^2)/Y}\approx1/\sqrt Y$.
+\end{proposition}
 
-For iid Gaussian returns \citep{lo2002}, in annual units over $Y$ years,
+\begin{proof}
+For a normal distribution, $\hat\mu$ and $\hat\sigma^2$ are independent, with
+$\Var(\hat\mu)=\sigma^2/T$ and $\Var(\hat\sigma^2)\approx2\sigma^4/T$. For
+$g(\mu,\sigma^2)=\mu/\sqrt{\sigma^2}$, $\partial_\mu g=1/\sigma$ and
+$\partial_{\sigma^2}g=-\mu/(2\sigma^3)$. The delta method gives
+$\Var(\SRh)\approx\frac1T+\frac{\mu^2}{4\sigma^6}\cdot\frac{2\sigma^4}T=\frac{1+\SR^2/2}T$.
+Annually, $\SRh_{\mathrm{ann}}=\sqrt P\,\SRh$ and $T=PY$.
+\end{proof}
+
+\fig[0.95\linewidth]{sharpe_ci.png}{95\pct{} confidence band of the estimated Sharpe ratio
+as a function of track record length.}
+
+A Sharpe ratio of 0.5 is only significantly positive after $(1.96/0.5)^2\approx15$
+years. In the example, Sharpe ratios range from 0.64 to 0.88 over 14 years, with a
+standard error of about 0.27: the gaps between strategies are not significant.
+
+\begin{definition}[Probabilistic Sharpe Ratio]
+With $\SRh$ and a threshold $\SR^\ast$ expressed per period, and $\gamma_3,\gamma_4$ the
+skewness and (non-excess) kurtosis of returns,
 \[
-\se(\SRh)\approx\sqrt{\frac{1+\tfrac12\SR_{\text{period}}^2}{Y}}\approx\frac1{\sqrt Y}.
+\mathrm{PSR}(\SR^\ast)=\Phi\!\left(\frac{(\SRh-\SR^\ast)\sqrt{T-1}}{\sqrt{1-\gamma_3\SRh+\frac{\gamma_4-1}4\SRh^2}}\right).
 \]
-
-\fig{sharpe_ci.png}{95\pct{} confidence band of the estimated Sharpe ratio as a function
-of track record length.}
-
-For a Sharpe ratio of 0.5 to be significantly positive at 95\pct, one needs
-$Y\ge(1.96/0.5)^2\approx15$ years; for a Sharpe ratio of 1, about 4 years. Most 10-year
-backtests cannot tell a Sharpe ratio of 0.5 from zero.
-
-\begin{example}[Consequence for the example]
-Sharpe ratios range from 0.64 (1/N) to 0.88 (HRP) over 14 years, with a standard error
-of about $1/\sqrt{14}=0.27$. The 0.24 gap is less than one standard error: we cannot
-claim that HRP beats 1/N. The test on the Sharpe difference between two correlated
-strategies \citep{jobsonkorkie1981,memmel2003} has a smaller standard error, but of the
-same order here.
-\end{example}
-
-\subsection{Probabilistic Sharpe Ratio}
-
-\begin{definition}[\citealp{bailey2012}]
-\[
-\mathrm{PSR}(\SR^\ast)=\Phi\!\left(\frac{(\SRh-\SR^\ast)\sqrt{T-1}}{\sqrt{1-\gamma_3\,\SRh+\frac{\gamma_4-1}{4}\,\SRh^2}}\right),
-\]
-where $\SRh$ and $\SR^\ast$ are expressed \emph{per period} (not annualized), $\gamma_3$
-is the skewness and $\gamma_4$ the (non-excess) kurtosis. It is the probability that the
-true Sharpe ratio exceeds the threshold $\SR^\ast$.
+It is the probability that the true Sharpe ratio exceeds $\SR^\ast$, accounting for
+skewness and fat tails \admitted{\citealp{bailey2012}}. For $\gamma_3=0$ and
+$\gamma_4=3$, it reduces to proposition~\ref{prop:sese}.
 \end{definition}
 
-\textbf{Reading the denominator.} Negative skewness or high kurtosis increase the
-variance of $\SRh$, and therefore lower the PSR. A short volatility strategy with a nice
-Sharpe ratio but $\gamma_3=-3$ will have a much lower PSR than a trend following
-strategy with the same Sharpe ratio and $\gamma_3>0$. \py{summary()} reports
-PSR(SR~>~0); above 0.95 the Sharpe ratio is significantly positive.
-
-\subsection{Deflated Sharpe Ratio}
-
-If $K$ variants (parameters, universes, methods) were tested and the best one kept, its
-Sharpe ratio is biased upward: even if all true Sharpe ratios are zero, the maximum of
-$K$ estimated ones is positive. The DSR \citep{bailey2014} replaces $\SR^\ast$ in the
-PSR with the expected maximum of $K$ zero Sharpe ratios:
+\begin{definition}[Deflated Sharpe Ratio]
+If $K$ variants were tested and the best one kept, the DSR is the PSR computed with the
+threshold
 \[
-\SR^\ast_K\approx\sqrt{\Var(\SRh_k)}\left[(1-\gamma_E)\,\Phi^{-1}\!\Bigl(1-\frac1K\Bigr)+\gamma_E\,\Phi^{-1}\!\Bigl(1-\frac1{Ke}\Bigr)\right],
+\SR^\ast_K=\sqrt{\Var(\SRh_k)}\Bigl[(1-\gamma_E)\,\Phi^{-1}\bigl(1-\tfrac1K\bigr)+\gamma_E\,\Phi^{-1}\bigl(1-\tfrac1{Ke}\bigr)\Bigr],
 \]
-with $\gamma_E\approx0.5772$ the Euler-Mascheroni constant and $\Var(\SRh_k)$ the
-variance of the Sharpe ratios observed across the $K$ trials. With $K=100$, the bracket
-equals $0.4228\times2.326+0.5772\times2.680\approx2.53$: an observed Sharpe ratio of
-about $2.5$ standard errors is needed to rule out pure data mining.
+which approximates the expected maximum of $K$ zero Sharpe ratios, with
+$\gamma_E\approx0.5772$ \admitted{\citealp{bailey2014}}.
+\end{definition}
 
-\begin{tip}
-Record the number of variants you tested. It is as important a piece of the backtest as
-the Sharpe ratio itself.
-\end{tip}
+For $K=100$, the bracket is about 2.53: an observed Sharpe ratio of at least 2.5
+standard errors is needed to rule out the effect of picking the best trial.
 
 \begin{code}
-\py{probabilistic_sharpe_ratio(r, sr_benchmark=0.0)}; the \py{sr_benchmark} threshold is
-given annualized and converted internally.
+\py{probabilistic_sharpe_ratio(r, sr_benchmark=0.0)}; the threshold is given annualized
+and converted internally. \py{summary} reports \py{PSR(SR>0)}.
 \end{code}
 
 % =============================================================================
-\section{Reading the example results}\label{sec:results}
+\section{Full example}\label{sec:example}
 
-\py{python examples/run_backtest.py --synthetic}: 10 simulated ETFs, 252-day in-sample
-window, rebalancing every 21 days, 5~bps of costs, December 2010 to June 2024 (3{,}528
-out-of-sample days).
+\py{python examples/run_backtest.py --synthetic}: 10 simulated ETFs, 252-day window,
+rebalancing every 21 days, 5~bps of costs, December 2010 to June 2024.
 
-\fig{report_01_wealth.png}{Out-of-sample growth of 1, net of costs, log scale.}
-
-\begin{table}[htbp]
-\centering\small
+\begin{center}\small
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 & 1/N & InvVol & RB bond tilt & ERC & ERC LW & HRP \\
@@ -1235,101 +1098,32 @@ out-of-sample days).
 CAGR & 6.9\pct & 6.6\pct & 6.1\pct & 6.2\pct & 6.2\pct & 6.1\pct \\
 Volatility & 11.4\pct & 8.9\pct & 7.7\pct & 8.2\pct & 8.4\pct & 7.0\pct \\
 Sharpe & 0.64 & 0.76 & 0.81 & 0.77 & 0.76 & 0.88 \\
-Sortino & 0.93 & 1.11 & 1.20 & 1.14 & 1.12 & 1.33 \\
-Calmar & 0.25 & 0.32 & 0.34 & 0.33 & 0.32 & 0.41 \\
 Max DD & $-27.3\pct$ & $-20.5\pct$ & $-18.0\pct$ & $-19.0\pct$ & $-19.5\pct$ & $-15.0\pct$ \\
 CVaR 95\pct{} (daily) & 1.7\pct & 1.3\pct & 1.1\pct & 1.2\pct & 1.2\pct & 1.0\pct \\
 Annual turnover & 38\pct & 41\pct & 45\pct & 49\pct & 48\pct & 120\pct \\
 \bottomrule
 \end{tabular}
-\caption{Out-of-sample metrics, net of costs.}\label{tab:results}
-\end{table}
+\captionof{table}{Out-of-sample metrics, net of costs. RB bond tilt doubles the risk
+budget of TLT, IEF and LQD; ERC LW uses Ledoit-Wolf.}
+\end{center}
 
-\fig{report_05_metrics.png}{Key metrics by strategy.}
+\fig{report_01_wealth.png}{Out-of-sample growth of 1, net of costs.}
 
-\textbf{Takeaways.}
+\fig{report_07_avg_risk_contrib.png}{Average relative risk contributions. 1/N puts
+79\pct{} of the risk on equity-like assets, ERC equalizes it, HRP concentrates 71\pct{} of
+it on the three bond ETFs.}
+
+\textbf{Reading.}
 \begin{enumerate}
-\item \textbf{1/N has the best CAGR but the worst risk.} It is simply more exposed to the
-risky assets, which had the best returns over the period. Its Sharpe ratio is the
-lowest.
-\item \textbf{Every risk-based method improves the Sharpe ratio and reduces drawdown}, by
-25 to 45\pct. This is the robust result from the literature.
-\item \textbf{The ranking between ERC, InvVol and HRP is not significant}
-(section~\ref{sec:stats}). Do not conclude from this backtest that HRP is the best
-method.
-\item \textbf{ERC LW $\approx$ ERC}: with 10 assets and 252 days ($q\approx0.04$),
-shrinkage is small (median $\delta^\ast$ of 4\pct, 15\pct{} at most). It becomes decisive
-from about fifty assets.
-\item \textbf{HRP's hidden cost is its turnover}, 2.5 times that of ERC.
+\item Compared with 1/N, the risk-based rules cut volatility by 20 to 40\pct{} and
+drawdown by 25 to 45\pct. 1/N keeps the best CAGR because it is more exposed to risky
+assets.
+\item The Sharpe ratio gaps between rules are smaller than one standard error
+(proposition~\ref{prop:sese}): this backtest cannot rank them.
+\item With 10 assets and 252 dates, Ledoit-Wolf shrinkage is small (median $\delta^\ast$
+of 4\pct) and changes the result little.
+\item HRP has the highest turnover, a consequence of the instability of the tree.
 \end{enumerate}
-
-\fig{report_06_avg_weights.png}{Average capital allocation.}
-\fig{report_07_avg_risk_contrib.png}{Average risk allocation (ex ante relative
-contributions).}
-
-These two tables summarize the difference between methods better than any metric.
-\begin{itemize}
-\item \textbf{1/N}: equal capital (10\pct{} each) but 79\pct{} of the risk on equity-like
-assets (SPY, EFA, EEM, IWM, VNQ). Treasuries contribute 0\pct{}, or even negatively,
-thanks to their negative correlation.
-\item \textbf{ERC}: exactly equal risk (10\pct{} each), at the cost of 39\pct{} of capital
-in IEF and TLT.
-\item \textbf{RB bond tilt}: the doubled budgets on TLT, IEF and LQD are met (15\pct{}
-each).
-\item \textbf{HRP}: 73\pct{} of capital and 71\pct{} of risk on the three bond ETFs, 67\pct{}
-of capital on IEF and LQD alone. The bisection treated the rates block as the other half
-of the universe and gave it massive weight as a low-volatility cluster.
-\end{itemize}
-
-\fig{report_08_weights_erc.png}{ERC weights across rebalancings.}
-\fig{report_08_weights_hrp.png}{HRP weights across rebalancings.}
-
-ERC adjusts its weights continuously and smoothly. HRP jumps from one configuration to
-another whenever the clustering tree changes: this is the visible source of its
-turnover.
-
-% =============================================================================
-\section{Expert checklist}\label{sec:checklist}
-
-\newlist{checklist}{itemize}{1}
-\setlist[checklist]{label=$\square$,leftmargin=1.5em,itemsep=1pt}
-
-\begin{minipage}[t]{0.48\linewidth}
-\textbf{\sffamily Data}
-\begin{checklist}
-\item Adjusted prices (total return), never returns on raw prices.
-\item No back-fill, no dropping of assets with a short history.
-\item Simple returns for the portfolio.
-\end{checklist}
-
-\textbf{\sffamily Estimation}
-\begin{checklist}
-\item $N/T$ ratio checked; above 0.1, shrinkage or a factor model.
-\item Expected returns never used without a strong prior or heavy shrinkage.
-\end{checklist}
-
-\textbf{\sffamily Backtest}
-\begin{checklist}
-\item Weights computed with information up to $t-1$ only.
-\item Weight drift modelled, turnover measured against drifted weights.
-\item Realistic costs (5 to 20~bps on liquid ETFs, more on small caps and emerging
-markets).
-\item Robustness tested on an $(L,H)$ grid and on rebalancing offsets.
-\item 1/N benchmark always included.
-\end{checklist}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\linewidth}
-\textbf{\sffamily Evaluation}
-\begin{checklist}
-\item Comparison on Sharpe ratio, or at equal volatility, not on raw CAGR.
-\item Standard error of the Sharpe ratio computed before any conclusion.
-\item PSR for non-normality, DSR if several variants were tested.
-\item Drawdowns and CVaR examined, not just volatility.
-\item Risk contributions inspected: know where the risk is.
-\item Subperiods and regimes analysed: overall performance may come from a single
-episode.
-\end{checklist}
-\end{minipage}
 
 % =============================================================================
 \clearpage
@@ -1342,10 +1136,6 @@ episode.
 Artzner, P., Delbaen, F., Eber, J.-M., Heath, D. (1999). Coherent measures of risk.
 \emph{Mathematical Finance}, 9(3), 203--228.
 
-\bibitem[Bai et~al.(2016)]{bai2016}
-Bai, X., Scheinberg, K., Tütüncü, R. (2016). Least-squares approach to risk parity in
-portfolio selection. \emph{Quantitative Finance}, 16(3), 357--376.
-
 \bibitem[Bailey and López de Prado(2012)]{bailey2012}
 Bailey, D. H., López de Prado, M. (2012). The Sharpe ratio efficient frontier.
 \emph{Journal of Risk}, 15(2), 3--44.
@@ -1355,38 +1145,14 @@ Bailey, D. H., López de Prado, M. (2014). The deflated Sharpe ratio: correcting
 selection bias, backtest overfitting and non-normality. \emph{Journal of Portfolio
 Management}, 40(5), 94--107.
 
-\bibitem[Booth and Fama(1992)]{boothfama1992}
-Booth, D. G., Fama, E. F. (1992). Diversification returns and asset contributions.
-\emph{Financial Analysts Journal}, 48(3), 26--32.
-
 \bibitem[DeMiguel et~al.(2009)]{demiguel2009}
 DeMiguel, V., Garlappi, L., Uppal, R. (2009). Optimal versus naive diversification: how
 inefficient is the 1/N portfolio strategy? \emph{Review of Financial Studies}, 22(5),
 1915--1953.
 
-\bibitem[Fernholz and Shay(1982)]{fernholz1982}
-Fernholz, R., Shay, B. (1982). Stochastic portfolio theory and stock market equilibrium.
-\emph{Journal of Finance}, 37(2), 615--624.
-
-\bibitem[Griveau-Billion et~al.(2013)]{griveau2013}
-Griveau-Billion, T., Richard, J.-C., Roncalli, T. (2013). A fast algorithm for computing
-high-dimensional risk parity portfolios. SSRN 2325255.
-
-\bibitem[Jobson and Korkie(1981)]{jobsonkorkie1981}
-Jobson, J. D., Korkie, B. M. (1981). Performance hypothesis testing with the Sharpe and
-Treynor measures. \emph{Journal of Finance}, 36(4), 889--908.
-
 \bibitem[Ledoit and Wolf(2004)]{ledoitwolf2004}
 Ledoit, O., Wolf, M. (2004). A well-conditioned estimator for large-dimensional
 covariance matrices. \emph{Journal of Multivariate Analysis}, 88(2), 365--411.
-
-\bibitem[Ledoit and Wolf(2020)]{ledoitwolf2020}
-Ledoit, O., Wolf, M. (2020). Analytical nonlinear shrinkage of large-dimensional
-covariance matrices. \emph{Annals of Statistics}, 48(5), 3043--3065.
-
-\bibitem[Lo(2002)]{lo2002}
-Lo, A. W. (2002). The statistics of Sharpe ratios. \emph{Financial Analysts Journal},
-58(4), 36--52.
 
 \bibitem[López de Prado(2016)]{lopezdeprado2016}
 López de Prado, M. (2016). Building diversified portfolios that outperform out of
@@ -1403,22 +1169,6 @@ risk contribution portfolios. \emph{Journal of Portfolio Management}, 36(4), 60-
 \bibitem[Marchenko and Pastur(1967)]{marchenko1967}
 Marchenko, V. A., Pastur, L. A. (1967). Distribution of eigenvalues for some sets of
 random matrices. \emph{Mathematics of the USSR-Sbornik}, 1(4), 457--483.
-
-\bibitem[Memmel(2003)]{memmel2003}
-Memmel, C. (2003). Performance hypothesis testing with the Sharpe ratio. \emph{Finance
-Letters}, 1, 21--23.
-
-\bibitem[Michaud(1989)]{michaud1989}
-Michaud, R. O. (1989). The Markowitz optimization enigma: is optimized optimal?
-\emph{Financial Analysts Journal}, 45(1), 31--42.
-
-\bibitem[J.P. Morgan and Reuters(1996)]{riskmetrics1996}
-J.P. Morgan, Reuters (1996). \emph{RiskMetrics: Technical Document}, 4th edition. New
-York.
-
-\bibitem[Roncalli(2013)]{roncalli2013}
-Roncalli, T. (2013). \emph{Introduction to Risk Parity and Budgeting}. Chapman \&
-Hall/CRC.
 
 \bibitem[Spinu(2013)]{spinu2013}
 Spinu, F. (2013). An algorithm for computing risk parity weights. SSRN 2297383.

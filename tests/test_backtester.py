@@ -93,6 +93,13 @@ def test_run_backtests(returns):
     assert bts["ERC"].annualized_turnover() > 0
 
 
+def test_run_backtests_duplicate_names_raise(returns):
+    with pytest.raises(ValueError, match="dict"):
+        run_backtests(returns, [ERC(), ERC(cov_method="ledoit_wolf")], 250, 21)
+    rets, _ = run_backtests(returns, {"ERC": ERC(), "ERC LW": ERC(cov_method="ledoit_wolf")}, 250, 21)
+    assert list(rets.columns) == ["ERC", "ERC LW"]
+
+
 def test_bad_params(returns):
     with pytest.raises(ValueError):
         Backtester(returns, ERC(), in_sample=len(returns), out_of_sample=5)
