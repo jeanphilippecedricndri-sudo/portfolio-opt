@@ -5,3 +5,11 @@ __pycache__/
 data_cache/
 outputs/
 .venv/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz

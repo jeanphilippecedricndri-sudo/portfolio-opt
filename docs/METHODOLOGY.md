@@ -1,6 +1,6 @@
 # Méthodologie : allocation de portefeuille et mesure de performance
 
-Guide de référence de `portopt`. Chaque méthode est présentée de la même façon : **l'intuition**, **la théorie** (avec démonstrations), **un exemple chiffré**, **les tips de praticien**, et **où c'est dans le code**.
+Guide de référence de `portopt`. Version PDF (LaTeX) : [`methodology.pdf`](methodology.pdf). Chaque méthode est présentée de la même façon : **l'intuition**, **la théorie** (avec démonstrations), **un exemple chiffré**, **les tips de praticien**, et **où c'est dans le code**.
 
 Les figures sont générées par `python docs/make_figures.py` (données simulées par `portopt.data.simulate_returns`, univers de 10 ETF multi-actifs, 15 ans).
 
@@ -276,7 +276,7 @@ car $\nabla\sigma_p(w)^\top w = \sigma_p(w)$ (Euler). En ERC, $w_i\, \partial_i\
 $$\sigma_{1/N} \ge \frac{\sigma_{ERC}}{N^2}\sum_i \frac{1}{w_i} \ge \sigma_{ERC}$$
 par l'inégalité arithmético-harmonique : $\sum_i 1/w_i \ge N^2 / \sum_i w_i = N^2$. $\blacksquare$
 
-**Interprétation** (Maillard et al.). Dans la paramétrisation de Spinu, $y^{\ast}$ minimise aussi $\sqrt{y^\top\Sigma y}$ sous la contrainte $\sum_i \ln y_i \ge c$ : ERC est un min-variance sous **contrainte de diversification** (entropie des poids). Relâcher la contrainte ($c \to -\infty$) donne le min-variance, la serrer au maximum donne 1/N. ERC est le compromis entre les deux.
+**Interprétation** (Maillard et al.). Dans la paramétrisation de Spinu, $y^{\ast}$ minimise aussi $\sqrt{y^\top\Sigma y}$ sous la contrainte $\sum_i \ln y_i \ge c$ (la valeur de $c$ ne change que l'échelle de $y^{\ast}$) : ERC est un min-variance sous **contrainte de diversification** logarithmique. Sans la contrainte, on retrouve le min-variance ; la contrainte empêche tout poids de tendre vers zéro.
 
 ![MV, ERC et 1/N sur deux actifs](figures/erc_two_assets.png)
 
@@ -288,7 +288,7 @@ Deux actifs : un risqué ($\sigma = 18\%$) et un sûr ($\sigma = 6\%$), $\rho = 
 - Si les Sharpe ratios de tous les actifs sont égaux **et** les corrélations homogènes, ERC est le portefeuille tangent (max-Sharpe). ERC est donc optimal sous une hypothèse "d'ignorance" raisonnable.
 
 **Tips.**
-- ERC surpondère les actifs peu volatils (obligations). Sa performance historique doit beaucoup au marché haussier obligataire 1981-2020. En 2022, actions et obligations ont baissé ensemble (corrélation positive) : les fonds risk parity levérés ont perdu 20 à 30 %.
+- ERC surpondère les actifs peu volatils (obligations). Sa performance historique doit beaucoup au marché haussier obligataire 1981-2020. En 2022, actions et obligations ont baissé ensemble (corrélation positive) : les fonds risk parity levérés ont perdu de l'ordre de 20 % ou plus.
 - Un ERC non levéré a une faible volatilité (8 % dans l'exemple). La comparaison avec 1/N doit se faire en **Sharpe**, ou à volatilité égale.
 
 > **Dans le code** : `ERC(cov_method=...)`.
@@ -597,7 +597,7 @@ avec $\gamma_E \approx 0.5772$ (constante d'Euler-Mascheroni) et $\operatorname{
 Ces deux tableaux résument la différence entre les méthodes mieux que n'importe quelle métrique :
 
 - **1/N** : capital égal (10 % partout), mais **79 % du risque** sur les actifs actions-like (SPY, EFA, EEM, IWM, VNQ). Les Treasuries contribuent à 0 % (voire négativement) grâce à leur corrélation négative.
-- **ERC** : risque exactement égal (10 % partout), au prix de 40 % du capital en IEF+TLT.
+- **ERC** : risque exactement égal (10 % partout), au prix de 39 % du capital en IEF+TLT.
 - **RB bond tilt** : les budgets 2× sur TLT, IEF, LQD sont respectés (15 % chacun).
 - **HRP** : 73 % du capital et 71 % du risque sur les trois ETF obligataires, dont 67 % du capital sur IEF et LQD seuls. La bissection a traité le bloc taux comme "l'autre moitié" de l'univers et lui a donné un poids massif en tant que cluster peu volatil.
 

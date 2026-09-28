@@ -4,7 +4,7 @@ Toolkit de recherche en allocation de portefeuille : données, estimateurs risk-
 
 ![Croissance de 1](docs/figures/report_01_wealth.png)
 
-**Documentation complète : [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)**. Théorie, démonstrations, exemples chiffrés et tips de praticien pour chaque méthode d'allocation et chaque indicateur.
+**Documentation complète : [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)**, également en PDF LaTeX : [`docs/methodology.pdf`](docs/methodology.pdf) (source `docs/methodology.tex`, compilation `cd docs && latexmk -xelatex methodology.tex`). Théorie, démonstrations, exemples chiffrés et tips de praticien pour chaque méthode d'allocation et chaque indicateur.
 
 ## Structure
 
@@ -18,6 +18,7 @@ portopt/
 └── fonts/          # Space Grotesk / Space Mono (OFL)
 docs/
 ├── METHODOLOGY.md  # le guide
+├── methodology.tex # le guide en LaTeX (-> methodology.pdf)
 ├── make_figures.py # régénère toutes les figures du guide
 └── figures/
 examples/run_backtest.py
