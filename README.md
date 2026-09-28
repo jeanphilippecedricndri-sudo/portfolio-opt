@@ -5,6 +5,7 @@ Toolkit de recherche en allocation de portefeuille : données, estimateurs risk-
 ![Croissance de 1](docs/figures/report_01_wealth.png)
 
 **Documentation**
+- [`examples/getting_started.ipynb`](examples/getting_started.ipynb) : notebook de prise en main (exécuté, avec ses sorties).
 - [`docs/user_guide.pdf`](docs/user_guide.pdf) : guide d'utilisation (installation, modules, recettes, erreurs fréquentes, référence API).
 - [`docs/methodology.pdf`](docs/methodology.pdf) (FR) et [`docs/methodology_en.pdf`](docs/methodology_en.pdf) (EN) : définitions, résultats et démonstrations de chaque méthode.
 - Sources LaTeX dans `docs/*.tex` ; compilation : `cd docs && latexmk -xelatex <fichier>.tex`.
@@ -26,7 +27,8 @@ docs/
 ├── user_guide.tex  # guide d'utilisation (-> user_guide.pdf)
 ├── make_figures.py # régénère toutes les figures du guide
 └── figures/
-examples/run_backtest.py
+examples/run_backtest.py            # comparaison complète en ligne de commande
+examples/getting_started.ipynb      # notebook de prise en main (généré par build_getting_started.py)
 tests/              # propriétés théoriques, no look-ahead, maths du backtest, métriques
 ```
 
